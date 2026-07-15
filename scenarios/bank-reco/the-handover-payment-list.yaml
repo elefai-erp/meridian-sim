@@ -1,0 +1,79 @@
+# Seed scenario 2 — Week 2: the trap in the handover sheet
+title: The Handover Payment List
+domain: bank-reco
+level: junior-accountant
+difficulty: junior
+week: 2
+status: draft
+
+trigger:
+  channel: drivebox
+  event: >
+    First week of live voucher entry. The April bank statement arrives in
+    DriveBox alongside the outgoing accountant's "pending payments list" —
+    a handover sheet of payments made in late March/early April that still
+    need entries in LedgerDesk.
+
+hidden_error: >
+  One vendor payment amount on the handover sheet is transposed against the
+  bank statement (two digits swapped, e.g. hundreds vs tens per instance).
+  The bank statement in DriveBox carries the true figure. A student who
+  enters from the handover sheet without verifying against the statement
+  books the wrong amount.
+
+student_task: >
+  Enter the pending payments verifying each against the bank statement (the
+  source document), not the handover summary — catching the transposed
+  amount in the process — and complete the April bank reconciliation Day 1
+  work Rajan asked for.
+
+common_wrong: >
+  Types entries straight from the handover sheet because it is conveniently
+  tabulated, never opening the bank statement until reconciliation forces it
+  weeks later.
+
+correct_treatment: >
+  Entries are made from source documents (bank statement / payment advice),
+  not from summaries. On finding the mismatch, book the statement figure and
+  note the difference to the vendor ledger so the vendor reconciliation ties.
+  A summary sheet is a checklist, never a source.
+law_reference: >
+  Source-document principle of vouching; bank reconciliation control
+  discipline; rectification of errors if already posted.
+
+rajan:
+  asked_probability: medium
+  is_wrong_here: true
+  advice: >
+    Reco not tallying? Difference is small na — pass a JV to bank charges and
+    close it. Reco tally hona chahiye by EOD, that's all.
+  why_wrong: >
+    Risky shortcut. Forcing a reconciliation with a plug JV hides a real
+    posting error, misstates the vendor's balance, and guarantees the vendor
+    statement mismatch resurfaces louder — with the vendor, in Week 6.
+    Differences are traced, not absorbed.
+
+consequence:
+  surfaces_week: 6
+  how: >
+    The vendor's ledger statement arrives and does not tie to books by the
+    transposed difference; the vendor disputes the payment amount and Rajan
+    forwards it with "you made the entry na, you only check." The April reco
+    also fails to close if the plug JV route was taken.
+  severity: moderate
+
+appraisal_notes: >
+  Credit: verified entries against the bank statement; caught the
+  transposition before posting or self-caught it during reco; refused the
+  plug-JV shortcut. Penalise: entered from the summary sheet unchecked;
+  forced the reco with a JV; waited for the vendor to find it.
+
+authored_by:
+  name: ""
+  membership_no: ""
+reviewed_by:
+  name: ""
+  membership_no: ""
+approved_date: null
+last_verified: null
+next_review_due: null

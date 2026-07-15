@@ -1,0 +1,82 @@
+# Seed scenario 5 — Week 4: Suresh gets loud
+title: Suresh's Missing Credit Note
+domain: vendor-mgmt
+level: junior-accountant
+difficulty: mid
+week: 4
+status: draft
+
+trigger:
+  channel: inboxpro
+  event: >
+    Suresh (Suresh Electricals) emails his ledger statement demanding payment
+    of the full outstanding "TODAY", copying Rajan. His statement balance is
+    lower than the balance in LedgerDesk — the books say Meridian owes him
+    more than he is claiming.
+
+hidden_error: >
+  A rate-difference credit note issued by Suresh in February (price
+  renegotiation on an MCB consignment, copy available in DriveBox's unfiled
+  documents folder) was never entered by the outgoing accountant. Books
+  therefore overstate both the creditor balance and the ITC originally
+  claimed on the full invoice value.
+
+student_task: >
+  Prepare a vendor reconciliation between Suresh's statement and the ledger,
+  locate the unrecorded credit note, book it with the corresponding ITC
+  reversal, agree the reconciled balance with Suresh in a professional
+  email, and schedule payment per terms.
+
+common_wrong: >
+  Pays whatever Suresh's statement says to stop the shouting (no
+  reconciliation, difference left hanging in the ledger), or ignores the
+  email because "our books show a different figure".
+
+correct_treatment: >
+  Differences are reconciled document-by-document, not settled by whoever
+  shouts loudest. The supplier's credit note is booked on discovery; since
+  ITC was availed on the original invoice value, the credit note's tax
+  component must be reversed in the month it is booked (s.34(2) CGST read
+  with the recipient's obligation to reduce ITC). The reconciled balance is
+  confirmed with the vendor in writing before payment.
+law_reference: >
+  s.34 CGST Act (credit notes); s.16 CGST (ITC availed to be commensurate);
+  GSTR-2B alignment; vendor confirmation as an audit control.
+
+rajan:
+  asked_probability: high
+  is_wrong_here: true
+  advice: >
+    Suresh always makes noise, ignore the drama. Pay him 5 lakh on account,
+    baaki month end mein dekh lenge. Statement-vatement matching is a waste
+    of time for regular vendors.
+  why_wrong: >
+    Risky shortcut. An on-account payment without reconciliation leaves the
+    phantom liability and the excess ITC sitting in the books — the auditor
+    finds the ITC over-claim, with interest. The difference is a specific
+    document, findable in thirty minutes of reconciliation.
+
+consequence:
+  surfaces_week: 6
+  how: >
+    Unreconciled, Suresh escalates: supply hold on pending orders and an
+    email to Mr. Agarwal, who forwards it to accounts with one line. The
+    unreversed ITC additionally resurfaces in the Week 10 GSTR-2B
+    reconciliation as an excess-claim requiring interest computation.
+  severity: major
+
+appraisal_notes: >
+  Credit: reconciled before responding; found the credit note; reversed ITC
+  in the correct period; replied to an aggressive vendor professionally and
+  kept Rajan informed. Penalise: paid on account under pressure; responded
+  rudely or not at all; booked the credit note without the ITC reversal.
+
+authored_by:
+  name: ""
+  membership_no: ""
+reviewed_by:
+  name: ""
+  membership_no: ""
+approved_date: null
+last_verified: null
+next_review_due: null

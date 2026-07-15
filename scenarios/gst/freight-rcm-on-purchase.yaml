@@ -1,0 +1,79 @@
+# Seed scenario 3 — Week 2: the freight line everyone ignores
+title: The Freight on the Omega Invoice
+domain: gst
+level: junior-accountant
+difficulty: mid
+week: 2
+status: draft
+
+trigger:
+  channel: drivebox
+  event: >
+    A purchase invoice from Omega Switchgear (Mumbai, IGST) lands in DriveBox,
+    with a separate freight bill from Krishna Freight Carriers and a
+    consignment note attached. Rajan pings: "omega ka bill entry karo, stock
+    aa gaya warehouse."
+
+hidden_error: >
+  The world contains no RCM self-invoice practice: prior months' books show
+  GTA freight consistently posted to Freight Inward with no reverse-charge
+  liability recognised — the student inherits and can perpetuate the pattern.
+
+student_task: >
+  Enter the Omega purchase (IGST), identify that the Krishna Freight bill is
+  GTA freight with a consignment note attracting GST under reverse charge,
+  raise the RCM self-invoice, include the liability in the month's GSTR-3B
+  workings (cash payment), and claim the corresponding ITC.
+
+common_wrong: >
+  Posts freight to Freight Inward (or adds it to purchase cost) with no RCM
+  entry, following the pattern visible in earlier months' books.
+
+correct_treatment: >
+  GTA freight under a consignment note attracts GST @5% under reverse charge
+  per Notification 13/2017-CT(R) read with s.9(3) CGST Act. The recipient
+  raises a self-invoice u/s 31(3)(f), discharges the liability in cash (RCM
+  cannot be set off against ITC), and claims ITC on it under s.16 — eligible
+  here as the freight is for business supplies. Freight itself is expensed to
+  Freight Inward; inventory valuation policy on freight is a separate,
+  consistent choice.
+law_reference: >
+  s.9(3) CGST Act; Notification 13/2017-Central Tax (Rate); s.31(3)(f);
+  s.16 CGST Act; GSTR-3B Table 3.1(d).
+
+rajan:
+  asked_probability: high
+  is_wrong_here: true
+  advice: >
+    Freight? Add to purchase cost only, we always do it that way. RCM-shaycm
+    all that is for big transporters, small amounts mein nobody bothers.
+  why_wrong: >
+    Outdated + oversimplified. RCM on GTA applies once a consignment note
+    exists regardless of amount; the books have simply been non-compliant.
+    Skipping the self-invoice understates 3B liability every month and
+    surfaces mechanically in the 2B/3B and books comparison at audit.
+
+consequence:
+  surfaces_week: 10
+  how: >
+    During Week 10's GSTR-2B reconciliation the RCM gap becomes visible
+    (liability never in 3B, no self-invoice register); in Week 11 the auditor
+    asks for the RCM register and computes interest u/s 50 on the unpaid
+    liability. The student drafts the explanation.
+  severity: major
+
+appraisal_notes: >
+  Credit: caught RCM despite the books' bad precedent; verified Rajan's
+  advice against the notification; discharged liability in cash correctly.
+  Penalise: followed the inherited pattern; netted RCM against ITC; needed
+  the auditor to surface it.
+
+authored_by:
+  name: ""
+  membership_no: ""
+reviewed_by:
+  name: ""
+  membership_no: ""
+approved_date: null
+last_verified: null
+next_review_due: null

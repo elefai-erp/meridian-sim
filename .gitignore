@@ -1,0 +1,30 @@
+# Go
+server/meridian
+server/**/*.test
+*.out
+
+# Node
+web/node_modules/
+web/dist/
+npm-debug.log*
+
+# Env & local
+.env
+.env.local
+*.local.yml
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+
+# Data
+*.sqlite
+pgdata/
+
+# Python
+__pycache__/
+*.pyc

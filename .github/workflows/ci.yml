@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  scenarios:
+    name: Validate scenarios
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml jsonschema
+      - run: python3 tools/validate_scenarios.py
+
+  app:
+    name: meridian_sim app checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Lint (ruff)
+        run: pipx run ruff check meridian_sim
+      - name: Syntax check
+        run: python3 -m compileall -q meridian_sim
+      - name: Pure simulation-core tests (no bench)
+        working-directory: meridian_sim
+        run: PYTHONPATH=. python3 -m unittest discover -s meridian_sim/tests -v

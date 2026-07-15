@@ -1,0 +1,78 @@
+# Seed scenario 1 — Week 1: the handover mess nobody explains
+title: The Suspense Account Nobody Mentions
+domain: bank-reco
+level: junior-accountant
+difficulty: junior
+week: 1
+status: draft
+
+trigger:
+  channel: storyline
+  event: >
+    Day 2 of the handover. While reviewing opening balances in LedgerDesk, the
+    trial balance shows account 1901 Suspense with a debit balance. The outgoing
+    accountant's handover note says only: "suspense - old items, adjust later."
+
+hidden_error: >
+  The suspense balance decomposes into three traceable items seeded per
+  instance: (1) a bank charge posted twice in different months, (2) one
+  counter-sale day banked but never entered as sales, (3) a transposition
+  error in a vendor payment entry. All three leave trails in the bank
+  statement and day books available in DriveBox.
+
+student_task: >
+  Investigate the suspense balance item by item against bank statements and
+  day books, identify the three underlying differences, and pass proper
+  rectification entries so suspense closes to zero before the March bank
+  reconciliation is attempted.
+
+common_wrong: >
+  Ignores it ("old items, not my problem"), or writes the whole balance off
+  to Miscellaneous Expenses to make the trial balance look clean.
+
+correct_treatment: >
+  Unexplained balances are investigated, never written off blind: reverse the
+  duplicated bank charge, record the missed counter sale (with GST output
+  implication), and rectify the transposed vendor payment. Suspense must be
+  nil before opening balances can be relied upon; a write-off would misstate
+  expenses, sales, GST output liability, and a vendor balance simultaneously.
+law_reference: >
+  Control-account discipline; rectification of errors; GST output liability on
+  the unrecorded sale (s.9 CGST Act); audit exposure under CARO 2020 reporting.
+
+rajan:
+  asked_probability: high
+  is_wrong_here: true
+  advice: >
+    Arre that suspense is sitting from before you joined. Small amount hai —
+    write off to misc expenses and move on, we have GST data to prepare.
+  why_wrong: >
+    Risky shortcut. One of the buried items is an unrecorded sale carrying GST
+    output liability; writing off buries a compliance issue, misstates three
+    ledgers, and hands the auditor a finding. "Small amount" is not a
+    materiality assessment, it's an excuse.
+
+consequence:
+  surfaces_week: 5
+  how: >
+    Audit schedule preparation (Week 5) requires opening balance confirmations;
+    an unexplained or written-off suspense becomes an auditor query the student
+    must answer in writing. The March bank reco also refuses to close cleanly
+    in Week 2 while item (1) and (3) remain buried.
+  severity: moderate
+
+appraisal_notes: >
+  Credit: investigated before adjusting; found all three items; caught the GST
+  implication of the unrecorded sale; refused Rajan's write-off with a stated
+  reason. Penalise: wrote off to misc expenses; ignored until the auditor
+  asked; cleared suspense against a plug entry.
+
+authored_by:
+  name: ""
+  membership_no: ""
+reviewed_by:
+  name: ""
+  membership_no: ""
+approved_date: null
+last_verified: null
+next_review_due: null

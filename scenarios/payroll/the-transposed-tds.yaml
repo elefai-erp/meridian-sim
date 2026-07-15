@@ -1,0 +1,82 @@
+# Seed scenario 4 — Week 3: first payroll, inherited computation sheet
+title: The Transposed TDS Sheet
+domain: payroll
+level: junior-accountant
+difficulty: mid
+week: 3
+status: draft
+
+trigger:
+  channel: pingdesk
+  event: >
+    Kavita (HR) sends April attendance and payroll inputs via PingDesk with a
+    DriveBox link, plus the outgoing accountant's "TDS working" spreadsheet.
+    Rajan pings: "salary process karo by 3rd, TDS bhi. use last accountant's
+    sheet, sab set hai usme."
+
+hidden_error: >
+  In the inherited TDS working, the monthly TDS amounts of two employees are
+  transposed against their actual salary computations (one senior, one
+  mid-level, per instance). Running payroll from the sheet over-deducts one
+  employee and under-deducts the other by the same amount. Each employee's
+  own investment declaration in DriveBox allows recomputation.
+
+student_task: >
+  Recompute TDS u/s 192 per employee from salary structure and investment
+  declarations rather than trusting the inherited sheet, catch the
+  transposition, and process April payroll in PayMate with correct
+  deductions.
+
+common_wrong: >
+  Runs payroll straight from the inherited sheet — "it was working till
+  March" — deducting the transposed amounts.
+
+correct_treatment: >
+  TDS on salary u/s 192 is computed on each employee's estimated annual
+  income at slab rates for their chosen regime, using their declarations —
+  a per-employee computation that must be re-established at the start of the
+  year, not copied forward. On discovery of a prior wrong deduction, excess/
+  short amounts are adjusted in subsequent months within the same FY u/s
+  192(3).
+law_reference: >
+  s.192, s.192(3) Income-tax Act; CBDT annual circular on salary TDS
+  (regime option u/s 115BAC).
+
+rajan:
+  asked_probability: medium
+  is_wrong_here: true
+  advice: >
+    Same to same copy karo from March sheet, only attendance changes. Year
+    end mein adjust ho jayega, employees ko kya pata chalta hai.
+  why_wrong: >
+    Risky shortcut + confidently wrong. Copying perpetuates the transposition;
+    one employee's take-home is visibly short (they notice immediately, not at
+    year end) and the other's short deduction accrues interest exposure u/s
+    201(1A). April is precisely when annual computations must be rebuilt.
+
+consequence:
+  surfaces_week: 7
+  how: >
+    The over-deducted employee complains their April and May take-home is
+    short by the transposed amount; Kavita escalates to Rajan, who forwards
+    it to the student. The under-deduction side surfaces again in Week 9 as
+    a short-deduction interest exposure when the auditor reviews TDS
+    workings.
+  severity: major
+
+appraisal_notes: >
+  Credit: recomputed per employee before first payroll; caught the
+  transposition proactively; explained the correction to HR clearly and
+  adjusted u/s 192(3). Penalise: copied the sheet; dismissed the employee
+  complaint; fixed the visible over-deduction but never checked whether a
+  matching under-deduction existed.
+
+authored_by:
+  name: ""
+  membership_no: ""
+reviewed_by:
+  name: ""
+  membership_no: ""
+approved_date: null
+last_verified: null
+next_review_due: null
