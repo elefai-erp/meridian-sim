@@ -26,7 +26,12 @@ def evaluate_due_checks():
     surface window has opened, run their predicate against live site data,
     and — where the failure condition holds — schedule the surfacing Story
     Event (the vendor email, the auditor query, the employee complaint).
-    """
-    import frappe  # noqa: F401 — implemented with the Consequence Check doctype
 
-    raise NotImplementedError("Implemented alongside the Consequence Check doctype")
+    Safe no-op until the Consequence Check doctype ships — the scheduler must
+    not accumulate failures on sites installed ahead of the simulation.
+    """
+    import frappe
+
+    if not frappe.db.table_exists("Consequence Check"):
+        return
+    # Implemented alongside the Consequence Check doctype.

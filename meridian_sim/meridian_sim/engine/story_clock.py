@@ -16,7 +16,13 @@ def tick():
       2. Run idle detection: no meaningful Action Log entries for N simulation
          days enqueues an in-story escalation (vendor follow-up, Rajan ping,
          eventually an audit notice).
-    """
-    import frappe  # noqa: F401 — implemented with the Sim Instance doctype
 
-    raise NotImplementedError("Implemented alongside the Sim Instance doctype")
+    Safe no-op until the Sim Instance doctype ships — the scheduler must not
+    accumulate failures on sites where the app is installed ahead of the
+    simulation going live.
+    """
+    import frappe
+
+    if not frappe.db.table_exists("Sim Instance"):
+        return
+    # Implemented alongside the Sim Instance doctype.
