@@ -128,7 +128,7 @@
     <a href="/contribute/leaderboard">Contributors</a>
     <a href="https://github.com/elefai-erp/meridian-sim" target="_blank" rel="noopener">GitHub</a>
     {% if frappe.session.user and frappe.session.user != "Guest" %}
-    <a href="/mydesk" class="ms-cta-sm">My Desk</a>
+    <a href="/go" class="ms-cta-sm">My Dashboard</a>
     {% else %}
     <a href="/students/apply" class="ms-cta-sm">Enroll</a>
     {% endif %}
@@ -159,10 +159,7 @@
     <div class="ms-field">
       <label>Specialisation area</label>
       <select id="f-spec">
-        <option value="gst">GST &amp; Indirect Tax</option><option value="tds">TDS &amp; Direct Tax</option>
-        <option value="payroll">Payroll &amp; Labour Compliance</option><option value="bank-reco">Bank Reconciliation &amp; Treasury</option>
-        <option value="finalization">Financial Reporting &amp; Ind AS</option><option value="mis">Cost Accounting &amp; MIS</option>
-        <option value="vendor-mgmt">Audit &amp; Internal Controls</option><option value="other">Other</option>
+        <option value="purchase-cycle">Purchase Cycle</option><option value="sales-cycle">Sales Cycle</option><option value="inventory">Inventory Management</option><option value="bank-reco">Banking & Reconciliation</option><option value="petty-cash">Petty Cash</option><option value="fixed-assets">Fixed Assets</option><option value="journal-entries">Journal Entries</option><option value="credit-notes">Credit Notes</option><option value="debit-notes">Debit Notes</option><option value="customer-outstanding">Customer Outstanding Management</option><option value="vendor-payments">Vendor Payments</option><option value="vendor-mgmt">Vendor Management (general)</option><option value="payroll">Payroll</option><option value="gst">GST Compliance</option><option value="tds">TDS Compliance</option><option value="tax-adjustments">Tax Adjustments</option><option value="month-end-closing">Month-End Closing</option><option value="year-end-closing">Year-End Closing</option><option value="finalization">Finalization (general)</option><option value="revenue-recognition">Revenue Recognition</option><option value="accrual-provision">Accrual & Provision Entries</option><option value="financial-statements">Financial Statement Preparation</option><option value="budget-vs-actual">Budget vs Actual Analysis</option><option value="mis">MIS & Reporting</option><option value="manufacturing-costing">Manufacturing Costing</option><option value="multi-branch">Multi-Branch Accounting</option><option value="intercompany">Intercompany Transactions</option><option value="foreign-currency">Foreign Currency Transactions</option><option value="audit-internal-control">Internal Control & Audit Cases</option><option value="fraud-detection">Fraud Detection Cases</option><option value="error-rectification">Error Identification & Rectification</option><option value="erp-workflow">ERP-based Workflow Scenarios</option><option value="business-decisions">Business Decision Cases</option><option value="other">Other</option>
       </select>
     </div>
     <div class="ms-field ms-check"><input type="checkbox" id="f-l2"><label for="f-l2" style="margin:0">I have personally completed (or will complete) the Level 2 student simulation</label></div>

@@ -5,80 +5,269 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "title", "domain", "level", "difficulty", "week", "status",
-    "trigger", "student_task", "common_wrong", "correct_treatment",
-    "law_reference", "rajan", "appraisal_notes", "authored_by", "reviewed_by"
+    "title",
+    "domain",
+    "level",
+    "difficulty",
+    "week",
+    "status",
+    "trigger",
+    "student_task",
+    "common_wrong",
+    "correct_treatment",
+    "law_reference",
+    "rajan",
+    "appraisal_notes",
+    "authored_by",
+    "reviewed_by"
   ],
   "properties": {
-    "title": { "type": "string", "minLength": 5, "maxLength": 80 },
+    "title": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 80
+    },
     "domain": {
-      "enum": ["gst", "tds", "payroll", "bank-reco", "finalization", "vendor-mgmt", "mis"]
+      "enum": [
+        "purchase-cycle",
+        "sales-cycle",
+        "inventory",
+        "bank-reco",
+        "petty-cash",
+        "fixed-assets",
+        "journal-entries",
+        "credit-notes",
+        "debit-notes",
+        "customer-outstanding",
+        "vendor-payments",
+        "vendor-mgmt",
+        "payroll",
+        "gst",
+        "tds",
+        "tax-adjustments",
+        "month-end-closing",
+        "year-end-closing",
+        "finalization",
+        "revenue-recognition",
+        "accrual-provision",
+        "financial-statements",
+        "budget-vs-actual",
+        "mis",
+        "manufacturing-costing",
+        "multi-branch",
+        "intercompany",
+        "foreign-currency",
+        "audit-internal-control",
+        "fraud-detection",
+        "error-rectification",
+        "erp-workflow",
+        "business-decisions"
+      ]
     },
     "level": {
-      "enum": ["accounts-assistant", "junior-accountant", "senior-accountant", "accounts-manager", "finance-controller"]
+      "enum": [
+        "accounts-assistant",
+        "junior-accountant",
+        "senior-accountant",
+        "accounts-manager",
+        "finance-controller"
+      ]
     },
-    "difficulty": { "enum": ["junior", "mid", "senior"] },
-    "week": { "type": "integer", "minimum": 1, "maximum": 12 },
-    "status": { "enum": ["draft", "in-review", "approved", "live", "needs-update"] },
+    "difficulty": {
+      "enum": [
+        "junior",
+        "mid",
+        "senior"
+      ]
+    },
+    "week": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 12
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "in-review",
+        "approved",
+        "live",
+        "needs-update"
+      ]
+    },
     "trigger": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["channel", "event"],
+      "required": [
+        "channel",
+        "event"
+      ],
       "properties": {
-        "channel": { "enum": ["inboxpro", "pingdesk", "drivebox", "taxportal", "ledgerdesk", "storyline"] },
-        "event": { "type": "string", "minLength": 20 }
+        "channel": {
+          "enum": [
+            "inboxpro",
+            "pingdesk",
+            "drivebox",
+            "taxportal",
+            "ledgerdesk",
+            "storyline"
+          ]
+        },
+        "event": {
+          "type": "string",
+          "minLength": 20
+        }
       }
     },
-    "hidden_error": { "type": "string", "minLength": 20 },
-    "student_task": { "type": "string", "minLength": 20 },
-    "common_wrong": { "type": "string", "minLength": 20 },
-    "correct_treatment": { "type": "string", "minLength": 20 },
-    "law_reference": { "type": "string", "minLength": 3 },
+    "hidden_error": {
+      "type": "string",
+      "minLength": 20
+    },
+    "student_task": {
+      "type": "string",
+      "minLength": 20
+    },
+    "common_wrong": {
+      "type": "string",
+      "minLength": 20
+    },
+    "correct_treatment": {
+      "type": "string",
+      "minLength": 20
+    },
+    "law_reference": {
+      "type": "string",
+      "minLength": 3
+    },
     "rajan": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["asked_probability", "is_wrong_here", "advice"],
+      "required": [
+        "asked_probability",
+        "is_wrong_here",
+        "advice"
+      ],
       "properties": {
-        "asked_probability": { "enum": ["low", "medium", "high"] },
-        "is_wrong_here": { "type": "boolean" },
-        "advice": { "type": "string", "minLength": 10 },
-        "why_wrong": { "type": "string", "minLength": 20 }
+        "asked_probability": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "is_wrong_here": {
+          "type": "boolean"
+        },
+        "advice": {
+          "type": "string",
+          "minLength": 10
+        },
+        "why_wrong": {
+          "type": "string",
+          "minLength": 20
+        }
       },
-      "if": { "properties": { "is_wrong_here": { "const": true } } },
-      "then": { "required": ["why_wrong"] }
+      "if": {
+        "properties": {
+          "is_wrong_here": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "why_wrong"
+        ]
+      }
     },
     "consequence": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["surfaces_week", "how", "severity"],
+      "required": [
+        "surfaces_week",
+        "how",
+        "severity"
+      ],
       "properties": {
-        "surfaces_week": { "type": "integer", "minimum": 1, "maximum": 12 },
-        "how": { "type": "string", "minLength": 20 },
-        "severity": { "enum": ["minor", "moderate", "major"] }
+        "surfaces_week": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        },
+        "how": {
+          "type": "string",
+          "minLength": 20
+        },
+        "severity": {
+          "enum": [
+            "minor",
+            "moderate",
+            "major"
+          ]
+        }
       }
     },
-    "appraisal_notes": { "type": "string", "minLength": 20 },
-    "authored_by": { "$ref": "#/$defs/attribution" },
-    "reviewed_by": { "$ref": "#/$defs/attribution" },
-    "approved_date": { "type": ["string", "null"], "format": "date" },
-    "last_verified": { "type": ["string", "null"], "format": "date" },
-    "next_review_due": { "type": ["string", "null"], "format": "date" }
+    "appraisal_notes": {
+      "type": "string",
+      "minLength": 20
+    },
+    "authored_by": {
+      "$ref": "#/$defs/attribution"
+    },
+    "reviewed_by": {
+      "$ref": "#/$defs/attribution"
+    },
+    "approved_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "last_verified": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "next_review_due": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    }
   },
   "allOf": [
     {
       "$comment": "A scenario that seeds a hidden error must declare its consequence",
-      "if": { "required": ["hidden_error"] },
-      "then": { "required": ["consequence"] }
+      "if": {
+        "required": [
+          "hidden_error"
+        ]
+      },
+      "then": {
+        "required": [
+          "consequence"
+        ]
+      }
     }
   ],
   "$defs": {
     "attribution": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "membership_no"],
+      "required": [
+        "name",
+        "membership_no"
+      ],
       "properties": {
-        "name": { "type": "string" },
-        "membership_no": { "type": "string" }
+        "name": {
+          "type": "string"
+        },
+        "membership_no": {
+          "type": "string"
+        }
       }
     }
   }

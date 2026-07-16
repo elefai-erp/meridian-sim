@@ -3,26 +3,34 @@
 import frappe
 from frappe.model.document import Document
 
+from meridian_sim import contributor_login
+from meridian_sim.contributors import find_or_create
+
 
 class ContributorApplication(Document):
 	def on_update(self):
-		if self.status == "Approved" and not self.linked_contributor:
-			existing = None
-			if self.membership_no:
-				existing = frappe.db.get_value("Contributor", {"membership_no": self.membership_no})
-			if not existing:
-				existing = frappe.db.get_value("Contributor", {"full_name": self.full_name})
+		if self.status != "Approved" or self.linked_contributor:
+			return
 
-			if existing:
-				contributor_name = existing
-			else:
-				contributor_name = frappe.get_doc({
-					"doctype": "Contributor", "full_name": self.full_name,
-					"membership_body": self.membership_body, "membership_no": self.membership_no,
-					"city": self.city, "specialization": self.specialization,
-					"role": "Scenario Author", "status": "Active",
-					"joined_on": frappe.utils.today(), "source_application": self.name,
-				}).insert(ignore_permissions=True).name
+		contributor = find_or_create(self.full_name, self.email, self.membership_no,
+									  self.specialization, self.city)
+		# membership_body and source_application aren't captured by find_or_create
+		# (shared with Scenario Submission, which has neither) — backfill here.
+		updates = {}
+		if self.membership_body:
+			updates["membership_body"] = self.membership_body
+		if not frappe.db.get_value("Contributor", contributor, "source_application"):
+			updates["source_application"] = self.name
+		if updates:
+			frappe.db.set_value("Contributor", contributor, updates)
 
-			self.linked_contributor = contributor_name
-			self.db_set("linked_contributor", contributor_name, notify=False)
+		self.db_set("linked_contributor", contributor, notify=False)
+
+		temp_password = contributor_login.ensure_login(contributor)
+		if temp_password:
+			frappe.msgprint(
+				f"A login was just created for this contributor ({self.email}) — "
+				f"temp password: {temp_password}. Relay it to them; no outgoing "
+				f"email is configured on this site.",
+				title="Contributor login created", indicator="blue",
+			)

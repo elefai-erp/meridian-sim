@@ -27,6 +27,13 @@
   "supporting_file",
   "status",
   "reviewer_notes",
+  "is_high_complexity",
+  "zero_revisions_required",
+  "top_rated_by_review_team",
+  "used_in_certification",
+  "major_revision",
+  "points_awarded",
+  "revision_points_awarded",
   "linked_contributor",
   "submitted_on"
  ],
@@ -54,7 +61,7 @@
    "fieldname": "specialization",
    "fieldtype": "Select",
    "label": "Your Specialisation",
-   "options": "gst\ntds\npayroll\nbank-reco\nfinalization\nvendor-mgmt\nmis\nother"
+   "options": "purchase-cycle\nsales-cycle\ninventory\nbank-reco\npetty-cash\nfixed-assets\njournal-entries\ncredit-notes\ndebit-notes\ncustomer-outstanding\nvendor-payments\nvendor-mgmt\npayroll\ngst\ntds\ntax-adjustments\nmonth-end-closing\nyear-end-closing\nfinalization\nrevenue-recognition\naccrual-provision\nfinancial-statements\nbudget-vs-actual\nmis\nmanufacturing-costing\nmulti-branch\nintercompany\nforeign-currency\naudit-internal-control\nfraud-detection\nerror-rectification\nerp-workflow\nbusiness-decisions\nother"
   },
   {
    "fieldname": "city",
@@ -77,7 +84,7 @@
    "fieldname": "domain",
    "fieldtype": "Select",
    "label": "Domain",
-   "options": "gst\ntds\npayroll\nbank-reco\nfinalization\nvendor-mgmt\nmis\nother",
+   "options": "purchase-cycle\nsales-cycle\ninventory\nbank-reco\npetty-cash\nfixed-assets\njournal-entries\ncredit-notes\ndebit-notes\ncustomer-outstanding\nvendor-payments\nvendor-mgmt\npayroll\ngst\ntds\ntax-adjustments\nmonth-end-closing\nyear-end-closing\nfinalization\nrevenue-recognition\naccrual-provision\nfinancial-statements\nbudget-vs-actual\nmis\nmanufacturing-costing\nmulti-branch\nintercompany\nforeign-currency\naudit-internal-control\nfraud-detection\nerror-rectification\nerp-workflow\nbusiness-decisions\nother",
    "reqd": 1,
    "in_list_view": 1
   },
@@ -157,6 +164,52 @@
    "label": "Reviewer Notes"
   },
   {
+   "fieldname": "is_high_complexity",
+   "fieldtype": "Check",
+   "label": "High Complexity Scenario (+15 pts)",
+   "default": "0"
+  },
+  {
+   "fieldname": "zero_revisions_required",
+   "fieldtype": "Check",
+   "label": "Zero Revisions Required (+10 pts)",
+   "default": "0"
+  },
+  {
+   "fieldname": "top_rated_by_review_team",
+   "fieldtype": "Check",
+   "label": "Top Rated by Review Team (+20 pts)",
+   "default": "0"
+  },
+  {
+   "fieldname": "used_in_certification",
+   "fieldtype": "Check",
+   "label": "Used in Certification (+30 pts)",
+   "default": "0"
+  },
+  {
+   "fieldname": "major_revision",
+   "fieldtype": "Check",
+   "label": "Major Revision of Existing Scenario (+10 pts)",
+   "default": "0"
+  },
+  {
+   "fieldname": "points_awarded",
+   "fieldtype": "Check",
+   "label": "Points Awarded (system)",
+   "default": "0",
+   "read_only": 1,
+   "print_hide": 1
+  },
+  {
+   "fieldname": "revision_points_awarded",
+   "fieldtype": "Check",
+   "label": "Revision Points Awarded (system)",
+   "default": "0",
+   "read_only": 1,
+   "print_hide": 1
+  },
+  {
    "fieldname": "linked_contributor",
    "fieldtype": "Link",
    "label": "Linked Contributor",
@@ -171,7 +224,7 @@
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-07-17 09:00:00.000000",
+ "modified": "2026-07-17 10:00:00.000000",
  "modified_by": "Administrator",
  "module": "Meridian Sim",
  "name": "Scenario Submission",

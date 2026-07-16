@@ -11,26 +11,14 @@ bypassed, and reads expose only what is meant to be public.
 import frappe
 from frappe.utils import now
 
+from meridian_sim import contributor_login, scoring
+from meridian_sim.contributors import find_or_create
+from meridian_sim.notify import notify_reviewers
+
 
 def _require(value, label):
     if not value or not str(value).strip():
         frappe.throw(f"{label} is required")
-
-
-def _notify_reviewers(reference_type, reference_name, description, priority="Medium"):
-    """Assign a ToDo to every System Manager — works with zero email/SMTP
-    configuration, surfaces in the Frappe desk notification bell immediately.
-    If a real outgoing Email Account is ever configured, this is the one
-    place to add frappe.sendmail() too."""
-    reviewers = frappe.get_all(
-        "Has Role", filters={"role": "System Manager", "parenttype": "User"}, pluck="parent"
-    )
-    for user in set(reviewers):
-        frappe.get_doc({
-            "doctype": "ToDo", "allocated_to": user, "status": "Open", "priority": priority,
-            "reference_type": reference_type, "reference_name": reference_name,
-            "description": description,
-        }).insert(ignore_permissions=True)
 
 
 # ------------------------------------------------------------ enrollment ---
@@ -47,8 +35,8 @@ def submit_student_application(full_name, email, phone=None, city=None,
         "level_interested": level_interested, "why_join": why_join,
         "status": "New", "applied_on": now(),
     }).insert(ignore_permissions=True)
-    _notify_reviewers("Student Application", doc.name,
-                       f"New student application: {doc.full_name} ({doc.level_interested})")
+    notify_reviewers("Student Application", doc.name,
+                      f"New student application: {doc.full_name} ({doc.level_interested})")
     frappe.db.commit()
     return {"name": doc.name}
 
@@ -70,8 +58,8 @@ def submit_contributor_application(full_name, email, specialization, phone=None,
         "specialization": specialization, "completed_level2": int(bool(int(completed_level2 or 0))),
         "motivation": motivation, "status": "New", "applied_on": now(),
     }).insert(ignore_permissions=True)
-    _notify_reviewers("Contributor Application", doc.name,
-                       f"New contributor application: {doc.full_name} ({doc.specialization})")
+    notify_reviewers("Contributor Application", doc.name,
+                      f"New contributor application: {doc.full_name} ({doc.specialization})")
     frappe.db.commit()
     return {"name": doc.name}
 
@@ -88,9 +76,22 @@ def submit_scenario(contributor_name, contributor_email, title, domain, situatio
                          (student_task, "Student task"), (correct_treatment, "Correct treatment"),
                          (law_reference, "Law reference")):
         _require(value, label)
+
+    contributor_name = contributor_name.strip()
+    contributor_email = contributor_email.strip()
+
+    # Resolve (or create) the Contributor record up front — per the badge
+    # table, "🌱 Contributor" is earned at first submission, not at approval,
+    # so this is also where their portal login gets provisioned.
+    contributor = find_or_create(contributor_name, contributor_email, membership_no, specialization, city)
+    frappe.db.set_value("Contributor", contributor, "scenarios_submitted",
+                         (frappe.db.get_value("Contributor", contributor, "scenarios_submitted") or 0) + 1)
+    scoring.award_points(contributor, "Submit a Scenario")
+    temp_password = contributor_login.ensure_login(contributor)
+
     doc = frappe.get_doc({
         "doctype": "Scenario Submission",
-        "contributor_name": contributor_name.strip(), "contributor_email": contributor_email.strip(),
+        "contributor_name": contributor_name, "contributor_email": contributor_email,
         "membership_no": membership_no, "specialization": specialization, "city": city,
         "years_of_practice": years_of_practice or 0,
         "title": title.strip(), "domain": domain, "difficulty": difficulty,
@@ -99,17 +100,46 @@ def submit_scenario(contributor_name, contributor_email, title, domain, situatio
         "rajan_advice": rajan_advice, "rajan_why_wrong": rajan_why_wrong,
         "consequence_what": consequence_what, "consequence_week": consequence_week,
         "supporting_file": supporting_file, "status": "Submitted", "submitted_on": now(),
-    })
-    existing = frappe.db.get_value("Contributor", {"membership_no": membership_no}) \
-        if membership_no else None
-    if existing:
-        doc.linked_contributor = existing
-    doc.insert(ignore_permissions=True)
-    _notify_reviewers("Scenario Submission", doc.name,
-                       f"New scenario submission: \"{doc.title}\" ({doc.domain}) by {doc.contributor_name}",
-                       priority="High")
+        "linked_contributor": contributor,
+    }).insert(ignore_permissions=True)
+
+    note = f"New scenario submission: \"{doc.title}\" ({doc.domain}) by {doc.contributor_name}"
+    if temp_password:
+        note += (f"\n\nNew contributor login created: {contributor_email} / temp password: "
+                 f"{temp_password}\nPlease relay this to them (WhatsApp/email) — no SMTP is "
+                 f"configured on this site, so they were not emailed automatically.")
+    notify_reviewers("Scenario Submission", doc.name, note, priority="High")
     frappe.db.commit()
-    return {"name": doc.name}
+    return {"name": doc.name, "contributor": contributor}
+
+
+# ---------------------------------------------------------- contributor portal --
+
+@frappe.whitelist()
+def my_contributor_profile():
+    """The logged-in contributor's own dashboard data. Requires login —
+    unlike everything else in this module, this is not allow_guest."""
+    contributor = frappe.db.get_value("Contributor", {"user": frappe.session.user})
+    if not contributor:
+        frappe.throw("No contributor profile is linked to your login.", frappe.DoesNotExistError)
+    doc = frappe.get_doc("Contributor", contributor)
+    badge = scoring.compute_badge(doc.scenarios_submitted or 0, doc.scenarios_authored or 0,
+                                   is_master=(doc.role == "Core Contributor" and doc.scenarios_authored >= 50))
+    submissions = frappe.get_all(
+        "Scenario Submission", filters={"linked_contributor": contributor},
+        fields=["name", "title", "domain", "difficulty", "status", "submitted_on"],
+        order_by="submitted_on desc",
+    )
+    return {
+        "full_name": doc.full_name, "role": doc.role, "specialization": doc.specialization,
+        "city": doc.city, "scenarios_submitted": doc.scenarios_submitted or 0,
+        "scenarios_authored": doc.scenarios_authored or 0,
+        "scenarios_reviewed": doc.scenarios_reviewed or 0,
+        "all_time_score": scoring.total_score(contributor),
+        "month_score": scoring.total_score(contributor, month_only=True),
+        "badge": badge, "submissions": submissions,
+        "linkedin_badge_url": f"/api/method/meridian_sim.badge.linkedin_badge?contributor={contributor}",
+    }
 
 
 # -------------------------------------------------------------- rankings ---
@@ -147,19 +177,19 @@ def student_leaderboard():
     return out
 
 
-_ROLE_WEIGHT = {"Core Contributor": 3, "Domain Reviewer": 2, "Scenario Author": 1}
-
-
 @frappe.whitelist(allow_guest=True)
-def contributor_leaderboard():
+def contributor_leaderboard(period="all"):
+    """period: 'all' (all-time) or 'month' (current calendar month)."""
+    month_only = period == "month"
     rows = frappe.get_all(
         "Contributor", filters={"status": "Active"},
         fields=["name", "full_name", "role", "specialization", "city",
-                "scenarios_authored", "scenarios_reviewed", "linkedin"],
+                "scenarios_authored", "scenarios_submitted", "scenarios_reviewed", "linkedin"],
     )
     for r in rows:
-        r["score"] = (r["scenarios_authored"] or 0) + 2 * (r["scenarios_reviewed"] or 0) \
-            + 5 * _ROLE_WEIGHT.get(r["role"], 0)
+        r["score"] = scoring.total_score(r["name"], month_only=month_only)
+        r["badge"] = scoring.compute_badge(r["scenarios_submitted"] or 0, r["scenarios_authored"] or 0)
+    rows = [r for r in rows if r["score"] > 0] if month_only else rows
     rows.sort(key=lambda r: r["score"], reverse=True)
     for i, r in enumerate(rows, start=1):
         r["rank"] = i

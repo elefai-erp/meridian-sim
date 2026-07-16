@@ -11,7 +11,16 @@
 ```yaml
 # scenarios/<domain>/<kebab-case-slug>.yaml
 title: The Freight on the Purchase Invoice     # Short, evocative, no spoilers
-domain: gst              # gst | tds | payroll | bank-reco | finalization | vendor-mgmt | mis
+domain: gst              # one of the domains in meridian_sim/taxonomy.py — purchase-cycle,
+                         # sales-cycle, inventory, bank-reco, petty-cash, fixed-assets,
+                         # journal-entries, credit-notes, debit-notes, customer-outstanding,
+                         # vendor-payments, vendor-mgmt, payroll, gst, tds, tax-adjustments,
+                         # month-end-closing, year-end-closing, finalization,
+                         # revenue-recognition, accrual-provision, financial-statements,
+                         # budget-vs-actual, mis, manufacturing-costing, multi-branch,
+                         # intercompany, foreign-currency, audit-internal-control,
+                         # fraud-detection, error-rectification, erp-workflow,
+                         # business-decisions (33 total — see taxonomy.py for the full list)
 level: junior-accountant # accounts-assistant | junior-accountant | senior-accountant |
                          # accounts-manager | finance-controller
 difficulty: junior       # junior | mid | senior

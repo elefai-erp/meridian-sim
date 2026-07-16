@@ -7,6 +7,7 @@
  "engine": "InnoDB",
  "field_order": [
   "full_name",
+  "email",
   "membership_body",
   "membership_no",
   "city",
@@ -14,6 +15,9 @@
   "role",
   "scenarios_authored",
   "scenarios_reviewed",
+  "user",
+  "login_created",
+  "scenarios_submitted",
   "bio",
   "linkedin",
   "joined_on",
@@ -27,6 +31,12 @@
    "label": "Full Name",
    "reqd": 1,
    "in_list_view": 1
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email",
+   "options": "Email"
   },
   {
    "fieldname": "membership_body",
@@ -47,7 +57,7 @@
    "fieldname": "specialization",
    "fieldtype": "Select",
    "label": "Specialisation Area",
-   "options": "gst\ntds\npayroll\nbank-reco\nfinalization\nvendor-mgmt\nmis\nother",
+   "options": "purchase-cycle\nsales-cycle\ninventory\nbank-reco\npetty-cash\nfixed-assets\njournal-entries\ncredit-notes\ndebit-notes\ncustomer-outstanding\nvendor-payments\nvendor-mgmt\npayroll\ngst\ntds\ntax-adjustments\nmonth-end-closing\nyear-end-closing\nfinalization\nrevenue-recognition\naccrual-provision\nfinancial-statements\nbudget-vs-actual\nmis\nmanufacturing-costing\nmulti-branch\nintercompany\nforeign-currency\naudit-internal-control\nfraud-detection\nerror-rectification\nerp-workflow\nbusiness-decisions\nother",
    "in_list_view": 1
   },
   {
@@ -72,6 +82,26 @@
    "label": "Scenarios Reviewed",
    "default": "0",
    "in_list_view": 1
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "Login User",
+   "options": "User"
+  },
+  {
+   "fieldname": "login_created",
+   "fieldtype": "Check",
+   "label": "Login Created (system)",
+   "default": "0",
+   "read_only": 1,
+   "print_hide": 1
+  },
+  {
+   "fieldname": "scenarios_submitted",
+   "fieldtype": "Int",
+   "label": "Scenarios Submitted (total)",
+   "default": "0"
   },
   {
    "fieldname": "bio",
@@ -105,7 +135,7 @@
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-07-17 09:00:00.000000",
+ "modified": "2026-07-17 10:00:00.000000",
  "modified_by": "Administrator",
  "module": "Meridian Sim",
  "name": "Contributor",

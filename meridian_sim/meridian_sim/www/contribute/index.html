@@ -128,7 +128,7 @@
     <a href="/contribute/leaderboard">Contributors</a>
     <a href="https://github.com/elefai-erp/meridian-sim" target="_blank" rel="noopener">GitHub</a>
     {% if frappe.session.user and frappe.session.user != "Guest" %}
-    <a href="/mydesk" class="ms-cta-sm">My Desk</a>
+    <a href="/go" class="ms-cta-sm">My Dashboard</a>
     {% else %}
     <a href="/students/apply" class="ms-cta-sm">Enroll</a>
     {% endif %}
@@ -143,6 +143,9 @@
     through a form &mdash; a Domain Reviewer verifies it, and it goes live to every student who reaches that week.</p>
   <a href="/contribute/submit" class="ms-btn primary">Submit a Scenario</a>
   <a href="/contribute/apply" class="ms-btn ghost">Join the Community First</a>
+  <div style="margin-top:14px;font-size:13px">
+    Already a contributor? <a href="/login?redirect-to=/contributor" style="color:#fff;text-decoration:underline">Log in to your dashboard &rarr;</a>
+  </div>
 </div>
 
 <div class="ms-wrap">
@@ -195,6 +198,37 @@
         <tr><td>Curriculum decision input</td><td>&mdash;</td><td>&mdash;</td><td>&#10003;</td></tr>
       </tbody>
     </table>
+  </div>
+
+  <div class="ms-sec">
+    <h2>The scorecard</h2>
+    <p class="lede">Every submission earns points automatically &mdash; your total (and this month's)
+      drive the <a href="/contribute/leaderboard">rankings</a>.</p>
+    <table class="ms">
+      <thead><tr><th>Activity</th><th>Points</th></tr></thead>
+      <tbody>
+        <tr><td>Submit a scenario</td><td>5</td></tr>
+        <tr><td>Scenario approved</td><td>25</td></tr>
+        <tr><td>High complexity scenario</td><td>+15</td></tr>
+        <tr><td>Zero revisions required</td><td>+10</td></tr>
+        <tr><td>Top rated by review team</td><td>+20</td></tr>
+        <tr><td>Scenario used in certification</td><td>+30</td></tr>
+        <tr><td>Major revision of an existing scenario</td><td>10</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ms-sec">
+    <h2>Badge ladder</h2>
+    <p class="lede">Your badge is computed live from published scenarios and shown on the public
+      leaderboard &mdash; download a LinkedIn-ready image of it from your contributor dashboard.</p>
+    <div class="ms-grid3">
+      <div class="ms-card"><h3>🌱 Contributor &rarr; 🏅 Published</h3><p>Earned at your first submission,
+        upgraded at your first published scenario.</p></div>
+      <div class="ms-card"><h3>🥉 🥈 🥇 Bronze / Silver / Gold</h3><p>5, 15, and 30 published scenarios.</p></div>
+      <div class="ms-card"><h3>💎 Platinum &middot; 👑 Master Designer</h3><p>50+ published, or Core
+        Contributor status for exceptional quality and impact.</p></div>
+    </div>
   </div>
 
   <div class="ms-sec" style="text-align:center">

@@ -128,7 +128,7 @@
     <a href="/contribute/leaderboard">Contributors</a>
     <a href="https://github.com/elefai-erp/meridian-sim" target="_blank" rel="noopener">GitHub</a>
     {% if frappe.session.user and frappe.session.user != "Guest" %}
-    <a href="/mydesk" class="ms-cta-sm">My Desk</a>
+    <a href="/go" class="ms-cta-sm">My Dashboard</a>
     {% else %}
     <a href="/students/apply" class="ms-cta-sm">Enroll</a>
     {% endif %}
@@ -138,10 +138,16 @@
 
 <div class="ms-wrap" style="padding-top:36px">
   <h2 style="color:var(--navy)">Contributor Rankings</h2>
-  <p class="lede">Ranked by scenarios authored and reviewed, weighted by role. Every name here carries
-    real accountability &mdash; their membership number is attached to every scenario they touch.</p>
+  <p class="lede">Every name here carries real accountability &mdash; their membership number is
+    attached to every scenario they touch.</p>
+  <div style="margin-bottom:16px">
+    <button class="ms-btn blue" id="lb-tab-all" onclick="lbPeriod('all')">All-Time</button>
+    <button class="ms-btn ghost" style="color:var(--navy);border-color:var(--navy)" id="lb-tab-month"
+            onclick="lbPeriod('month')">This Month</button>
+  </div>
   <table class="ms">
-    <thead><tr><th>#</th><th>Name</th><th>Role</th><th>Domain</th><th>City</th><th>Authored</th><th>Reviewed</th></tr></thead>
+    <thead><tr><th>#</th><th>Name</th><th>Badge</th><th>Role</th><th>Domain</th><th>Score</th>
+      <th>Published</th></tr></thead>
     <tbody id="lb-rows"><tr><td colspan="7">Loading&hellip;</td></tr></tbody>
   </table>
 </div>
@@ -159,27 +165,37 @@
 <script>
 function esc(s) { var d = document.createElement("div"); d.textContent = s || ""; return d.innerHTML; }
 
-frappe.ready(function () {
+function lbPeriod(p) {
+  document.getElementById("lb-tab-all").className = p === "all" ? "ms-btn blue" : "ms-btn ghost";
+  document.getElementById("lb-tab-all").style.cssText = p === "all" ? "" : "color:var(--navy);border-color:var(--navy)";
+  document.getElementById("lb-tab-month").className = p === "month" ? "ms-btn blue" : "ms-btn ghost";
+  document.getElementById("lb-tab-month").style.cssText = p === "month" ? "" : "color:var(--navy);border-color:var(--navy)";
+  lbLoad(p);
+}
+function lbLoad(period) {
   frappe.call({
     method: "meridian_sim.public.contributor_leaderboard",
+    args: { period: period || "all" },
     callback: function (r) {
       var rows = r.message || [];
       var tb = document.getElementById("lb-rows");
       if (!rows.length) {
-        tb.innerHTML = '<tr><td colspan="7" class="ms-empty">No contributors yet &mdash; ' +
+        tb.innerHTML = '<tr><td colspan="7" class="ms-empty">No contributors yet for this period &mdash; ' +
           '<a href="/contribute/submit">submit the first scenario</a> and claim the top spot.</td></tr>';
         return;
       }
       var cls = { "Core Contributor": "navy", "Domain Reviewer": "gold", "Scenario Author": "" };
       tb.innerHTML = rows.map(function (c) {
         return "<tr><td>" + c.rank + "</td><td>" + esc(c.full_name) +
-          '</td><td><span class="ms-badge ' + (cls[c.role] || "") + '">' + esc(c.role) + "</span></td><td>" +
-          esc(c.specialization || "") + "</td><td>" + esc(c.city || "") + "</td><td>" +
-          c.scenarios_authored + "</td><td>" + c.scenarios_reviewed + "</td></tr>";
+          '</td><td><span class="ms-badge gold">' + esc(c.badge.label) + '</span></td>' +
+          '<td><span class="ms-badge ' + (cls[c.role] || "") + '">' + esc(c.role) + "</span></td><td>" +
+          esc(c.specialization || "") + "</td><td><b>" + c.score + "</b></td><td>" +
+          c.scenarios_authored + "</td></tr>";
       }).join("");
     }
   });
-});
+}
+frappe.ready(function () { lbLoad("all"); });
 
 </script>
 {% endblock %}

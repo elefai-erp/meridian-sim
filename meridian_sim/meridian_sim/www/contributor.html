@@ -1,0 +1,239 @@
+{% extends "templates/web.html" %}
+
+{% block title %}My Contributor Dashboard — Knowledge Bridge Academy{% endblock %}
+
+{% block page_content %}
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+  .navbar, .web-footer, footer.web-footer,
+  .page-breadcrumbs, .page-header-wrapper { display: none !important; }
+  .page_content, main.container { padding: 0 !important; margin: 0 !important; max-width: none !important; }
+  :root {
+    --navy-deep:#0a1e3c; --navy:#1e5c83; --navy2:#123a54;
+    --gold:#c4a041; --gold2:#e8c56b; --gold-deep:#8a6d1f;
+    --ink:#132338; --muted:#5b6675; --bg:#f5f7fa; --card:#fff; --border:#e3e7ee; --r:14px;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); font-family: "Inter",-apple-system,"Segoe UI",Roboto,sans-serif;
+    color: var(--ink); margin:0; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3, .ms-brand-text { font-family: "Poppins","Inter",sans-serif; }
+  a { color: var(--navy); text-decoration: none; }
+  .ms-nav { background: var(--navy-deep); color: #fff; display: flex; align-items: center; gap: 22px;
+    padding: 12px 28px; flex-wrap: wrap; position: sticky; top: 0; z-index: 40;
+    box-shadow: 0 2px 14px rgba(0,0,0,.18); border-bottom: 1px solid rgba(196,160,65,.35); }
+  .ms-brand { display: flex; align-items: center; gap: 10px; color: #fff; }
+  .ms-brand img { height: 38px; width: 38px; display: block; }
+  .ms-brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+  .ms-brand-text b { font-weight: 800; font-size: 14.5px; letter-spacing: .3px; color: #fff; }
+  .ms-brand-text span { font-size: 9.5px; letter-spacing: 1.4px; color: var(--gold2); font-weight: 600; }
+  .ms-links { display: flex; gap: 19px; align-items: center; margin-left: auto; flex-wrap: wrap; font-size: 13.5px; }
+  .ms-links a { color: #c3cfe3; font-weight: 500; }
+  .ms-links a:hover { color: #fff; }
+  .ms-cta-sm { background: linear-gradient(135deg, var(--gold2), var(--gold)); color: #2b1d00 !important;
+    padding: 7px 16px; border-radius: 999px; font-weight: 700; }
+  .ms-wrap { max-width: 1000px; margin: 0 auto; padding: 0 20px 76px; }
+  .ms-hero { background-image: linear-gradient(120deg, rgba(8,20,40,.90), rgba(10,30,60,.93)), var(--hero-photo, none);
+    background-size: cover; background-position: center; background-color: var(--navy-deep);
+    color: #fff; margin: 0 0 34px; padding: 60px 26px 54px; text-align: center; position: relative; overflow: hidden;
+    border-bottom: 3px solid var(--gold); }
+  .ms-photos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  @media (max-width: 760px) { .ms-photos { grid-template-columns: 1fr; } }
+  .ms-photo-card { border-radius: var(--r); overflow: hidden; background: var(--card); border: 1px solid var(--border);
+    box-shadow: 0 4px 16px rgba(10,30,60,.06); }
+  .ms-photo-card img { width: 100%; height: 170px; object-fit: cover; display: block; }
+  .ms-photo-card .cap { padding: 14px 16px; font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .ms-photo-card .cap b { display: block; color: var(--navy-deep); font-size: 14px; margin-bottom: 3px; }
+  .ms-inline-photo { width: 100%; border-radius: var(--r); margin: 20px 0; box-shadow: 0 6px 20px rgba(10,30,60,.10); }
+  .ms-hero-logo { height: 96px; width: 96px; margin-bottom: 18px; filter: drop-shadow(0 6px 18px rgba(0,0,0,.4)); }
+  .ms-hero .kicker { color: var(--gold2); font-weight: 700; letter-spacing: 2px; font-size: 12px;
+    text-transform: uppercase; margin-bottom: 10px; }
+  .ms-hero h1 { font-size: 36px; margin: 0 0 4px; font-weight: 800; color: #fff !important; }
+  .ms-hero .engine { font-size: 15.5px; color: var(--gold2); font-weight: 600; margin-bottom: 16px; letter-spacing: .3px; }
+  .ms-hero .tag { color: var(--gold2); font-weight: 700; letter-spacing: .4px; font-size: 12.5px;
+    text-transform: uppercase; margin-bottom: 14px; }
+  .ms-hero p { max-width: 640px; margin: 0 auto 24px; color: #d7deee; font-size: 16px; line-height: 1.65; }
+  .ms-btn { display: inline-block; padding: 12px 26px; border-radius: 999px; font-weight: 700;
+    font-size: 14px; cursor: pointer; border: none; transition: transform .12s, box-shadow .12s; }
+  .ms-btn:hover { transform: translateY(-1px); }
+  .ms-btn.primary { background: linear-gradient(135deg, var(--gold2), var(--gold)); color: #2b1d00;
+    box-shadow: 0 6px 18px rgba(196,160,65,.35); }
+  .ms-btn.ghost { background: rgba(255,255,255,.10); color: #fff; border: 1px solid rgba(255,255,255,.4); margin-left: 10px; }
+  .ms-btn.blue { background: var(--navy); color: #fff; box-shadow: 0 6px 16px rgba(30,92,131,.3); }
+  .ms-sec { margin: 46px 0; }
+  .ms-sec h2 { font-size: 24px; margin-bottom: 6px; color: var(--navy-deep); font-weight: 800; }
+  .ms-sec .lede { color: var(--muted); margin-bottom: 22px; font-size: 14.5px; line-height: 1.6; }
+  .ms-grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .ms-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 760px) { .ms-grid3, .ms-grid2 { grid-template-columns: 1fr; } .ms-hero h1 { font-size: 28px; } }
+  .ms-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 22px;
+    transition: box-shadow .15s, transform .15s; }
+  .ms-card:hover { box-shadow: 0 10px 26px rgba(10,30,60,.08); transform: translateY(-2px); }
+  .ms-card h3 { margin: 0 0 8px; color: var(--navy-deep); font-size: 16.5px; font-weight: 700; }
+  .ms-card p { font-size: 13.5px; color: var(--muted); line-height: 1.6; margin: 0; }
+  table.ms { width: 100%; border-collapse: collapse; font-size: 13.5px; background: var(--card);
+    border: 1px solid var(--border); border-radius: var(--r); overflow: hidden;
+    box-shadow: 0 2px 10px rgba(10,30,60,.04); }
+  table.ms th { background: var(--navy-deep); text-align: left; padding: 11px 14px; color: #fff; font-size: 12px;
+    font-weight: 600; letter-spacing: .2px; }
+  table.ms td { padding: 11px 14px; border-top: 1px solid var(--border); }
+  table.ms tr:hover td { background: #f8f9fc; }
+  .ms-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 11px;
+    border-radius: 999px; background: #e8f0fe; color: var(--navy); }
+  .ms-badge.gold { background: #fbedcc; color: var(--gold-deep); }
+  .ms-badge.navy { background: #dfe6f3; color: var(--navy-deep); }
+  .ms-form { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 28px;
+    box-shadow: 0 4px 18px rgba(10,30,60,.05); }
+  .ms-form h3 { margin-top: 0; }
+  .ms-field { margin-bottom: 15px; }
+  .ms-field label { display: block; font-size: 12.5px; font-weight: 600; color: var(--muted); margin-bottom: 5px; }
+  .ms-field .hint { font-size: 11.5px; color: #8a94a6; margin-top: 3px; }
+  .ms-field input, .ms-field select, .ms-field textarea { width: 100%; border: 1.5px solid #d7deea;
+    border-radius: 8px; padding: 10px 12px; font-size: 13.5px; font-family: inherit; transition: border-color .12s; }
+  .ms-field input:focus, .ms-field select:focus, .ms-field textarea:focus { outline: none; border-color: var(--navy); }
+  .ms-field textarea { resize: vertical; }
+  .ms-check { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .ms-check input { width: auto; }
+  .ms-fieldset { border: 1.5px solid var(--border); border-radius: var(--r); padding: 18px 20px; margin-bottom: 20px; }
+  .ms-fieldset legend { font-weight: 700; color: var(--navy-deep); padding: 0 8px; font-size: 13.5px; }
+  .ms-success { display: none; background: #e6f4ea; border: 1px solid #b7dfc4; border-radius: var(--r);
+    padding: 16px; color: #135c2d; font-size: 13.5px; margin-top: 14px; }
+  .ms-empty { text-align: center; padding: 50px 20px; color: #8a94a6; font-size: 14px; }
+  .ms-foot { background: var(--navy-deep); color: #aebbd6; text-align: center; padding: 30px 20px; font-size: 12.5px;
+    margin-top: 40px; border-top: 3px solid var(--gold); }
+  .ms-foot img { height: 26px; vertical-align: middle; margin-right: 8px; }
+  .ms-foot strong { color: #fff; }
+  .ms-foot a { color: #dbe4f7; }
+  .ms-quote { border-left: 3px solid var(--gold); padding-left: 16px; font-style: italic; color: var(--muted);
+    margin: 18px 0; font-size: 14.5px; }
+  .ms-video-wrap { background: var(--navy-deep); border-radius: var(--r); padding: 8px; box-shadow: 0 10px 30px rgba(10,30,60,.18); }
+  .ms-video-wrap video { width: 100%; display: block; border-radius: 8px; background: #000; }
+  .ms-pdf-card { display: flex; gap: 20px; align-items: center; background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 18px; box-shadow: 0 4px 16px rgba(10,30,60,.05); flex-wrap: wrap; }
+  .ms-pdf-card img { width: 160px; border-radius: 8px; border: 1px solid var(--border); flex: none; }
+  .ms-pdf-card .txt { flex: 1; min-width: 220px; }
+  .ms-pdf-card h3 { margin: 0 0 6px; color: var(--navy-deep); }
+  .ms-pdf-card p { color: var(--muted); font-size: 13.5px; margin: 0 0 14px; line-height: 1.55; }
+</style>
+
+<nav class="ms-nav">
+  <a href="/" class="ms-brand">
+    <img src="/assets/meridian_sim/images/kb-logo.png" alt="Knowledge Bridge Academy">
+    <span class="ms-brand-text"><b>KNOWLEDGE BRIDGE</b><span>ACADEMY</span></span>
+  </a>
+  <div class="ms-links">
+    <a href="/about">About</a>
+    <a href="/students">Students</a>
+    <a href="/students/leaderboard">Rankings</a>
+    <a href="/contribute">Contribute</a>
+    <a href="/contribute/leaderboard">Contributors</a>
+    <a href="https://github.com/elefai-erp/meridian-sim" target="_blank" rel="noopener">GitHub</a>
+    {% if frappe.session.user and frappe.session.user != "Guest" %}
+    <a href="/go" class="ms-cta-sm">My Dashboard</a>
+    {% else %}
+    <a href="/students/apply" class="ms-cta-sm">Enroll</a>
+    {% endif %}
+  </div>
+</nav>
+
+
+<div class="ms-wrap" style="padding-top:36px">
+  <div id="cp-loading" style="text-align:center;padding:60px;color:var(--muted)">Loading your dashboard&hellip;</div>
+
+  <div id="cp-body" style="display:none">
+    <div class="ms-card" style="display:flex;justify-content:space-between;align-items:center;
+         flex-wrap:wrap;gap:16px;padding:26px;margin-bottom:22px">
+      <div>
+        <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;
+             font-weight:700" id="cp-role"></div>
+        <h2 style="margin:4px 0 6px" id="cp-name"></h2>
+        <div class="ms-badge gold" style="font-size:14px;padding:6px 16px" id="cp-badge"></div>
+      </div>
+      <a class="ms-btn blue" id="cp-linkedin" href="#" download>&#128190; Download LinkedIn Badge</a>
+    </div>
+
+    <div class="ms-grid3" style="margin-bottom:22px">
+      <div class="ms-card"><h3 style="font-size:32px;color:var(--gold-deep);margin-bottom:4px" id="cp-score-all">0</h3><p>All-time score</p></div>
+      <div class="ms-card"><h3 style="font-size:32px;color:var(--gold-deep);margin-bottom:4px" id="cp-score-month">0</h3><p>This month's score</p></div>
+      <div class="ms-card"><h3 style="font-size:32px;color:var(--gold-deep);margin-bottom:4px" id="cp-published">0</h3><p>Scenarios published (<span id="cp-submitted">0</span> submitted)</p></div>
+    </div>
+
+    <div class="ms-card" style="margin-bottom:22px" id="cp-progress-card">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px" id="cp-progress-text"></div>
+      <div style="background:#eef1f8;border-radius:999px;height:10px;overflow:hidden">
+        <div id="cp-progress-bar" style="background:linear-gradient(90deg,var(--gold),var(--gold2));
+             height:100%;width:0%;border-radius:999px"></div>
+      </div>
+    </div>
+
+    <div class="ms-sec">
+      <h2>Your submissions</h2>
+      <table class="ms">
+        <thead><tr><th>Title</th><th>Domain</th><th>Difficulty</th><th>Status</th><th>Submitted</th></tr></thead>
+        <tbody id="cp-rows"></tbody>
+      </table>
+      <p style="margin-top:16px"><a href="/contribute/submit" class="ms-btn blue">Submit another scenario</a></p>
+    </div>
+  </div>
+
+  <div id="cp-error" style="display:none" class="ms-empty"></div>
+</div>
+
+
+<footer class="ms-foot">
+  <div><img src="/assets/meridian_sim/images/kb-logo.png" alt=""><strong>Knowledge Bridge Academy</strong>
+    &mdash; a CA-community platform training students on <strong>Meridian Sim</strong>,
+    the parallel-reality accounting training engine. Not a course. A 3-month job.</div>
+  <div style="margin-top:10px">Open Source Project &middot; CA Community Driven &middot;
+    <a href="https://github.com/elefai-erp/meridian-sim" target="_blank" rel="noopener">GitHub</a> &middot;
+    AGPL-3.0 code &middot; CC BY-SA 4.0 content</div>
+</footer>
+
+<script>
+function esc(s) { var d = document.createElement("div"); d.textContent = s || ""; return d.innerHTML; }
+
+frappe.ready(function () {
+  frappe.call({
+    method: "meridian_sim.public.my_contributor_profile",
+    callback: function (r) {
+      document.getElementById("cp-loading").style.display = "none";
+      if (!r.message) { showErr("No profile found."); return; }
+      var d = r.message;
+      document.getElementById("cp-body").style.display = "block";
+      document.getElementById("cp-role").textContent = d.role + (d.specialization ? " · " + d.specialization : "");
+      document.getElementById("cp-name").textContent = d.full_name;
+      document.getElementById("cp-badge").textContent = d.badge.label;
+      document.getElementById("cp-score-all").textContent = d.all_time_score;
+      document.getElementById("cp-score-month").textContent = d.month_score;
+      document.getElementById("cp-published").textContent = d.scenarios_authored;
+      document.getElementById("cp-submitted").textContent = d.scenarios_submitted;
+      document.getElementById("cp-linkedin").href = d.linkedin_badge_url;
+
+      var pc = document.getElementById("cp-progress-card");
+      if (d.badge.next) {
+        var cur = d.badge.progress[0], target = d.badge.progress[1];
+        document.getElementById("cp-progress-text").textContent =
+          cur + " / " + target + " published scenarios toward " + d.badge.next;
+        document.getElementById("cp-progress-bar").style.width = Math.min(100, 100 * cur / target) + "%";
+      } else {
+        pc.style.display = "none";
+      }
+
+      var tb = document.getElementById("cp-rows");
+      tb.innerHTML = d.submissions.length ? d.submissions.map(function (s) {
+        return "<tr><td>" + esc(s.title) + "</td><td>" + esc(s.domain) + "</td><td>" + esc(s.difficulty) +
+          "</td><td><span class=\"ms-badge\">" + esc(s.status) + "</span></td><td>" +
+          (s.submitted_on || "").slice(0, 10) + "</td></tr>";
+      }).join("") : '<tr><td colspan="5" class="ms-empty">No submissions yet</td></tr>';
+    },
+    error: function () { showErr("Could not load your profile. Try logging in again."); }
+  });
+});
+function showErr(msg) {
+  document.getElementById("cp-loading").style.display = "none";
+  var e = document.getElementById("cp-error");
+  e.style.display = "block";
+  e.textContent = msg;
+}
+
+</script>
+{% endblock %}
