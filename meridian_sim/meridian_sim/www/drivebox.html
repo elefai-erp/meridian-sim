@@ -1,0 +1,102 @@
+{% block title %}DriveBox{% endblock %}
+
+{% block page_content %}
+<style>
+  .navbar, .web-footer, footer { display: none !important; }
+  body { background: #fff; }
+  .db-wrap { max-width: 1060px; margin: 0 auto; padding: 20px 16px;
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .db-top { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+  .db-logo { font-size: 20px; font-weight: 700; color: #1a73e8; }
+  .db-logo b { color: #34a853; }
+  .db-sim { background: #fff3cd; color: #7a5b00; border: 1px solid #e6cf7a; font-size: 11px;
+    padding: 2px 10px; border-radius: 999px; font-weight: 600; }
+  .db-back { margin-left: auto; font-size: 13px; }
+  table.db { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  table.db th { text-align: left; color: #5f6368; font-weight: 600; font-size: 12px;
+    border-bottom: 1px solid #e0e0e0; padding: 8px 10px; }
+  table.db td { padding: 10px; border-bottom: 1px solid #f1f3f4; color: #202124; }
+  table.db tr:hover td { background: #f8f9fa; cursor: pointer; }
+  .db-cat { font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 999px;
+    background: #e8f0fe; color: #1a67d2; }
+  .db-cat.Notice { background: #fce8e6; color: #c5221f; }
+  .db-cat.GSTR-2B { background: #e6f4ea; color: #137333; }
+  .db-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 50; }
+  .db-sheet { background: #fff; max-width: 760px; margin: 6vh auto; border-radius: 12px;
+    padding: 22px; max-height: 82vh; overflow: auto; }
+  .db-sheet h3 { margin: 0 0 4px; }
+  .db-sheet .meta { color: #5f6368; font-size: 12.5px; margin-bottom: 14px; }
+  .db-sheet pre { background: #f8f9fa; border: 1px solid #eee; border-radius: 8px;
+    padding: 14px; font-size: 12.5px; white-space: pre-wrap; }
+  .db-x { float: right; cursor: pointer; font-size: 20px; color: #666; }
+  .db-empty { color: #80868b; padding: 50px; text-align: center; }
+</style>
+
+<div class="db-wrap">
+  <div class="db-top">
+    <div class="db-logo">Drive<b>Box</b></div>
+    <span class="db-sim">TRAINING SIMULATION</span>
+    <a class="db-back" href="/mydesk">&larr; My Desk</a>
+  </div>
+
+  <table class="db">
+    <thead><tr><th>Name</th><th>Category</th><th>Dropped by</th><th>When</th></tr></thead>
+    <tbody id="db-rows"><tr><td colspan="4" class="db-empty">Loading&hellip;</td></tr></tbody>
+  </table>
+</div>
+
+<div class="db-modal" id="db-modal" onclick="if(event.target===this)dbClose()">
+  <div class="db-sheet">
+    <span class="db-x" onclick="dbClose()">&times;</span>
+    <h3 id="m-title"></h3>
+    <div class="meta" id="m-meta"></div>
+    <div id="m-filelink"></div>
+    <pre id="m-content" style="display:none"></pre>
+  </div>
+</div>
+
+<script>
+function esc(s) { var d = document.createElement("div"); d.textContent = s || ""; return d.innerHTML; }
+
+function dbLoad() {
+  frappe.call({
+    method: "meridian_sim.api.drive_list",
+    callback: function (r) {
+      var rows = r.message || [];
+      var tb = document.getElementById("db-rows");
+      if (!rows.length) { tb.innerHTML = '<tr><td colspan="4" class="db-empty">Nothing has been shared with you yet</td></tr>'; return; }
+      tb.innerHTML = rows.map(function (d) {
+        return '<tr onclick="dbOpen(\'' + d.name + '\')">' +
+          '<td>&#128196; ' + esc(d.title) + '</td>' +
+          '<td><span class="db-cat ' + esc(d.category) + '">' + esc(d.category) + '</span></td>' +
+          '<td>' + esc(d.dropped_by || "") + '</td>' +
+          '<td>' + (d.dropped_at || "").slice(0, 16) + '</td></tr>';
+      }).join("");
+    }
+  });
+}
+
+function dbOpen(name) {
+  frappe.call({
+    method: "meridian_sim.api.document_get",
+    args: { name: name },
+    callback: function (r) {
+      var d = r.message;
+      document.getElementById("m-title").innerHTML = esc(d.title);
+      document.getElementById("m-meta").innerHTML = esc(d.category) + " &middot; " +
+        esc(d.dropped_by || "") + " &middot; " + esc(d.dropped_at) +
+        (d.description ? "<br>" + esc(d.description) : "");
+      var fl = document.getElementById("m-filelink");
+      fl.innerHTML = d.file ? '<a href="' + d.file + '" target="_blank" rel="noopener">&#11015; Download file</a>' : "";
+      var pc = document.getElementById("m-content");
+      if (d.content) { pc.style.display = "block"; pc.textContent = d.content; }
+      else { pc.style.display = "none"; }
+      document.getElementById("db-modal").style.display = "block";
+    }
+  });
+}
+function dbClose() { document.getElementById("db-modal").style.display = "none"; }
+
+frappe.ready(function () { dbLoad(); });
+</script>
+{% endblock %}

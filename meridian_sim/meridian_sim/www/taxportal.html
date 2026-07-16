@@ -1,0 +1,163 @@
+{% block title %}TaxPortal — GST{% endblock %}
+
+{% block page_content %}
+<style>
+  .navbar, .web-footer, footer { display: none !important; }
+  body { background: #f4f6f9; }
+  .tp-wrap { max-width: 1080px; margin: 0 auto; padding: 0 14px 50px;
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .tp-head { background: #1f4e9c; color: #fff; margin: 12px -14px 0; padding: 14px 22px;
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap; border-radius: 0 0 10px 10px; }
+  .tp-title { font-size: 19px; font-weight: 700; letter-spacing: .3px; }
+  .tp-sub { font-size: 11.5px; opacity: .85; }
+  .tp-sim { background: #ffd24d; color: #5b4300; font-size: 11px; padding: 3px 12px;
+    border-radius: 999px; font-weight: 700; }
+  .tp-back { margin-left: auto; color: #cfe0ff; font-size: 13px; text-decoration: none; }
+  .tp-card { background: #fff; border: 1px solid #dfe5ee; border-radius: 10px; padding: 18px; margin-top: 16px; }
+  .tp-row { display: flex; gap: 26px; flex-wrap: wrap; font-size: 13.5px; }
+  .tp-row b { display: block; color: #5b6675; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+  .tp-h { font-size: 15px; font-weight: 700; color: #1f2d4a; margin: 0 0 12px; }
+  .tp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .tp-grid { grid-template-columns: 1fr; } }
+  .tp-ret { border: 1px solid #e3e8f0; border-radius: 10px; padding: 16px; }
+  .tp-ret h4 { margin: 0 0 2px; color: #1f4e9c; }
+  .tp-ret .due { font-size: 12px; color: #5b6675; margin-bottom: 12px; }
+  select.tp, button.tp { font-size: 13px; border-radius: 6px; border: 1px solid #c9d3e0;
+    padding: 7px 12px; background: #fff; }
+  button.tp { cursor: pointer; }
+  button.tp.blue { background: #1f4e9c; color: #fff; border-color: #1f4e9c; }
+  table.tp { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+  table.tp th { background: #eef2f8; text-align: left; padding: 7px 10px; color: #33415e;
+    font-size: 12px; border: 1px solid #dde4ee; }
+  table.tp td { padding: 7px 10px; border: 1px solid #e6ebf3; }
+  .tp-filed { color: #137333; font-weight: 700; }
+  .tp-arnbox { display: none; background: #e6f4ea; border: 1px solid #b7dfc4; border-radius: 8px;
+    padding: 12px 14px; margin-top: 12px; font-size: 13.5px; color: #135c2d; }
+  .tp-note { font-size: 11.5px; color: #8a94a6; margin-top: 14px; }
+</style>
+
+<div class="tp-wrap">
+  <div class="tp-head">
+    <div>
+      <div class="tp-title">Goods and Services Tax</div>
+      <div class="tp-sub">TaxPortal &mdash; return filing simulation</div>
+    </div>
+    <span class="tp-sim">TRAINING SIMULATION &mdash; NOT THE REAL GST PORTAL</span>
+    <a class="tp-back" href="/mydesk">&larr; My Desk</a>
+  </div>
+
+  <div class="tp-card">
+    <div class="tp-row">
+      <div><b>GSTIN</b><span id="tp-gstin">&mdash;</span></div>
+      <div><b>Legal name</b><span id="tp-company">&mdash;</span></div>
+      <div><b>Type</b><span>Regular &middot; Monthly filer</span></div>
+      <div><b>State</b><span>36 &mdash; Telangana</span></div>
+    </div>
+  </div>
+
+  <div class="tp-card">
+    <div class="tp-h">Return Dashboard &nbsp;
+      <select id="tp-period" class="tp">
+        <option value="042026">April 2026</option>
+        <option value="052026">May 2026</option>
+        <option value="062026">June 2026</option>
+      </select>
+    </div>
+    <div class="tp-grid">
+      <div class="tp-ret">
+        <h4>GSTR-1</h4>
+        <div class="due">Outward supplies &middot; due 11th of following month</div>
+        <button class="tp" onclick="tpPrepare('GSTR-1')">Prepare from books</button>
+        <button class="tp blue" onclick="tpFile('GSTR-1')">File with EVC</button>
+        <table class="tp" id="sum-GSTR-1" style="display:none"></table>
+      </div>
+      <div class="tp-ret">
+        <h4>GSTR-3B</h4>
+        <div class="due">Summary return &amp; tax payment &middot; due 20th</div>
+        <button class="tp" onclick="tpPrepare('GSTR-3B')">Prepare from books</button>
+        <button class="tp blue" onclick="tpFile('GSTR-3B')">File with EVC</button>
+        <table class="tp" id="sum-GSTR-3B" style="display:none"></table>
+      </div>
+    </div>
+    <div class="tp-arnbox" id="tp-arn"></div>
+    <div class="tp-note">Figures are computed live from your LedgerDesk books. If your books are
+      wrong, your return is wrong &mdash; exactly like real life. Filing here is final for the period.</div>
+  </div>
+
+  <div class="tp-card">
+    <div class="tp-h">Downloads &mdash; GSTR-2B</div>
+    <div id="tp-2b" style="font-size:13.5px">Loading&hellip;</div>
+  </div>
+
+  <div class="tp-card">
+    <div class="tp-h">Filed returns</div>
+    <table class="tp"><thead><tr><th>Return</th><th>Period</th><th>Status</th><th>ARN</th><th>Filed at</th></tr></thead>
+    <tbody id="tp-filed"><tr><td colspan="5">Loading&hellip;</td></tr></tbody></table>
+  </div>
+</div>
+
+<script>
+function esc(s) { var d = document.createElement("div"); d.textContent = s || ""; return d.innerHTML; }
+function inr(n) { return "&#8377;" + Number(n || 0).toLocaleString("en-IN", { maximumFractionDigits: 0 }); }
+
+function tpDash() {
+  frappe.call({
+    method: "meridian_sim.api.gst_dashboard",
+    callback: function (r) {
+      var d = r.message;
+      document.getElementById("tp-gstin").textContent = d.gstin;
+      document.getElementById("tp-company").textContent = d.company;
+      var fb = document.getElementById("tp-filed");
+      fb.innerHTML = d.returns.length ? d.returns.map(function (x) {
+        return "<tr><td>" + esc(x.return_type) + "</td><td>" + esc(x.period_label) + "</td>" +
+          '<td class="tp-filed">' + esc(x.status) + "</td><td>" + esc(x.arn || "") + "</td><td>" +
+          (x.filed_at || "").slice(0, 16) + "</td></tr>";
+      }).join("") : '<tr><td colspan="5">No returns filed yet</td></tr>';
+      var tb = document.getElementById("tp-2b");
+      tb.innerHTML = d.gstr2b.length ? d.gstr2b.map(function (x) {
+        return "&#128229; " + esc(x.title) + ' &mdash; <a href="/drivebox">open in DriveBox</a>';
+      }).join("<br>") : "No GSTR-2B generated for your GSTIN yet.";
+    }
+  });
+}
+
+function tpPrepare(rt) {
+  frappe.call({
+    method: "meridian_sim.api.gst_prepare",
+    args: { return_type: rt, period: document.getElementById("tp-period").value },
+    callback: function (r) {
+      var s = r.message.summary;
+      var t = document.getElementById("sum-" + rt);
+      var rows = "<tr><th>Particulars</th><th>Amount</th></tr>" +
+        "<tr><td>Outward taxable value (" + s.invoices + " invoices)</td><td>" + inr(s.outward_taxable) + "</td></tr>" +
+        "<tr><td>Output tax</td><td>" + inr(s.outward_tax) + "</td></tr>";
+      if (rt === "GSTR-3B") {
+        rows += "<tr><td>ITC available (" + s.purchase_invoices + " purchase invoices)</td><td>" + inr(s.itc_tax) + "</td></tr>" +
+          "<tr><td><b>Net tax payable (cash)</b></td><td><b>" + inr(Math.max(0, s.outward_tax - s.itc_tax)) + "</b></td></tr>";
+      }
+      t.innerHTML = rows;
+      t.style.display = "table";
+    }
+  });
+}
+
+function tpFile(rt) {
+  var period = document.getElementById("tp-period").value;
+  if (!confirm("Declaration: I solemnly affirm the information given above is true and correct.\n\nFile " + rt + " for this period with EVC?")) return;
+  frappe.call({
+    method: "meridian_sim.api.gst_file",
+    args: { return_type: rt, period: period },
+    callback: function (r) {
+      var m = r.message;
+      var box = document.getElementById("tp-arn");
+      box.style.display = "block";
+      box.innerHTML = "&#9989; <b>" + rt + " filed successfully</b> for " + esc(m.period_label) +
+        ".<br>Acknowledgement Reference Number (ARN): <b>" + esc(m.arn) + "</b> &middot; " + esc(m.filed_at);
+      tpDash();
+    }
+  });
+}
+
+frappe.ready(function () { tpDash(); });
+</script>
+{% endblock %}

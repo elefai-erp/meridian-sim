@@ -1,0 +1,108 @@
+{% block title %}PingDesk{% endblock %}
+
+{% block page_content %}
+<style>
+  .navbar, .web-footer, footer { display: none !important; }
+  body { background: #e5ddd5; }
+  .pd-wrap { max-width: 1100px; margin: 0 auto; padding: 12px;
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .pd-top { display: flex; align-items: center; gap: 12px; background: #075e54; color: #fff;
+    padding: 10px 16px; border-radius: 10px 10px 0 0; }
+  .pd-logo { font-weight: 700; font-size: 17px; }
+  .pd-sim { background: rgba(255,255,255,.18); font-size: 10.5px; padding: 2px 10px;
+    border-radius: 999px; font-weight: 600; }
+  .pd-back { margin-left: auto; color: #d2ede9; font-size: 13px; text-decoration: none; }
+  .pd-main { display: grid; grid-template-columns: 300px 1fr; height: 72vh;
+    background: #fff; border-radius: 0 0 10px 10px; overflow: hidden; border: 1px solid #d5d9dd; }
+  @media (max-width: 760px) { .pd-main { grid-template-columns: 110px 1fr; } }
+  .pd-chans { border-right: 1px solid #eee; overflow: auto; background: #fff; }
+  .pd-chan { padding: 13px 14px; border-bottom: 1px solid #f3f3f3; cursor: pointer; display: flex; gap: 10px; align-items: center; }
+  .pd-chan.sel { background: #ebebeb; }
+  .pd-av { width: 38px; height: 38px; border-radius: 50%; background: #128c7e; color: #fff;
+    display: flex; align-items: center; justify-content: center; font-weight: 700; flex: none; }
+  .pd-chan .nm { font-size: 14px; font-weight: 600; color: #111; }
+  .pd-chan .lm { font-size: 12px; color: #777; white-space: nowrap; overflow: hidden;
+    text-overflow: ellipsis; max-width: 180px; }
+  .pd-chat { display: flex; flex-direction: column;
+    background: #efe7dd; }
+  .pd-msgs { flex: 1; overflow: auto; padding: 18px; }
+  .pd-b { max-width: 70%; margin-bottom: 8px; padding: 8px 12px; border-radius: 8px;
+    font-size: 13.5px; line-height: 1.45; box-shadow: 0 1px 1px rgba(0,0,0,.08); white-space: pre-wrap; }
+  .pd-b.in { background: #fff; margin-right: auto; }
+  .pd-b.out { background: #dcf8c6; margin-left: auto; }
+  .pd-b .t { display: block; font-size: 10.5px; color: #888; text-align: right; margin-top: 3px; }
+  .pd-input { display: flex; gap: 8px; padding: 10px; background: #f0f0f0; }
+  .pd-input input { flex: 1; border: none; border-radius: 20px; padding: 10px 16px; font-size: 14px; }
+  .pd-input button { border: none; background: #075e54; color: #fff; border-radius: 50%;
+    width: 42px; height: 42px; font-size: 17px; cursor: pointer; }
+</style>
+
+<div class="pd-wrap">
+  <div class="pd-top">
+    <span class="pd-logo">PingDesk</span>
+    <span class="pd-sim">TRAINING SIMULATION</span>
+    <a class="pd-back" href="/mydesk">&larr; My Desk</a>
+  </div>
+  <div class="pd-main">
+    <div class="pd-chans" id="pd-chans"></div>
+    <div class="pd-chat">
+      <div class="pd-msgs" id="pd-msgs"></div>
+      <div class="pd-input">
+        <input id="pd-text" placeholder="Type a message" onkeydown="if(event.key==='Enter')pdSend()">
+        <button onclick="pdSend()">&#10148;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var pdState = { msgs: [], channel: null };
+function esc(s) { var d = document.createElement("div"); d.textContent = s || ""; return d.innerHTML; }
+
+function pdRender() {
+  var chans = {};
+  pdState.msgs.forEach(function (m) { (chans[m.channel] = chans[m.channel] || []).push(m); });
+  var names = Object.keys(chans);
+  if (!pdState.channel && names.length) pdState.channel = names[0];
+
+  document.getElementById("pd-chans").innerHTML = names.map(function (c) {
+    var last = chans[c][chans[c].length - 1];
+    var init = c.split(" ").map(function (w) { return w[0]; }).join("").slice(0, 2).toUpperCase();
+    return '<div class="pd-chan ' + (c === pdState.channel ? "sel" : "") + '" onclick="pdPick(\'' + esc(c) + '\')">' +
+      '<div class="pd-av">' + init + '</div><div><div class="nm">' + esc(c) + '</div>' +
+      '<div class="lm">' + esc(last.message).slice(0, 40) + '</div></div></div>';
+  }).join("");
+
+  var msgs = chans[pdState.channel] || [];
+  var box = document.getElementById("pd-msgs");
+  box.innerHTML = msgs.map(function (m) {
+    return '<div class="pd-b ' + (m.direction === "Out" ? "out" : "in") + '">' + esc(m.message) +
+      '<span class="t">' + (m.sent_at || "").slice(5, 16) + '</span></div>';
+  }).join("");
+  box.scrollTop = box.scrollHeight;
+}
+
+function pdPick(c) { pdState.channel = c; pdRender(); }
+
+function pdLoad() {
+  frappe.call({
+    method: "meridian_sim.api.chat_list",
+    callback: function (r) { pdState.msgs = r.message || []; pdRender(); }
+  });
+}
+
+function pdSend() {
+  var input = document.getElementById("pd-text");
+  var text = input.value.trim();
+  if (!text || !pdState.channel) return;
+  input.value = "";
+  frappe.call({
+    method: "meridian_sim.api.chat_send",
+    args: { channel: pdState.channel, message: text },
+    callback: function () { pdLoad(); }
+  });
+}
+
+frappe.ready(function () { pdLoad(); setInterval(pdLoad, 30000); });
+</script>
+{% endblock %}

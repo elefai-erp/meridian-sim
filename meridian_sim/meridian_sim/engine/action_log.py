@@ -1,4 +1,4 @@
-"""Action capture: every student action feeds the appraisal's Action Log.
+"""Action capture: every student action feeds the appraisal's Sim Action Log.
 
 Wired to ERPNext doctypes via hooks.doc_events; mock sites call `record`
 directly through their APIs.
@@ -15,21 +15,25 @@ def capture(doc, method=None):
 
 
 def record(kind: str, reference: str | None = None, payload: dict | None = None):
-    """Append one action for the current site's simulation instance."""
+    """Append one action for the session user's active simulation instance.
+
+    Must never break the calling transaction: silently a no-op when the
+    simulation tables don't exist (app installed ahead of the simulation)
+    or when the user has no active instance (admins working on the site).
+    """
     import frappe
 
-    # No-op until the simulation doctypes ship — capture must never break a
-    # voucher submission on a site that has the app but no simulation yet.
-    if not frappe.db.table_exists("Sim Instance") or not frappe.db.table_exists("Action Log"):
+    if not frappe.db.table_exists("Sim Instance") or not frappe.db.table_exists("Sim Action Log"):
         return
-
-    # A site is one student instance; skip capture on non-simulation sites
-    # (e.g. the golden template while it is being prepared by admins).
-    if not frappe.db.exists("Sim Instance", {"status": "Active"}):
+    instance = frappe.db.get_value(
+        "Sim Instance", {"student": frappe.session.user, "status": "Active"}
+    )
+    if not instance:
         return
     frappe.get_doc(
         {
-            "doctype": "Action Log",
+            "doctype": "Sim Action Log",
+            "instance": instance,
             "at": frappe.utils.now(),
             "user": frappe.session.user,
             "kind": kind,

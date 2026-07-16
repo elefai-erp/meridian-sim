@@ -1,0 +1,108 @@
+{% block title %}My Desk — Meridian Trading{% endblock %}
+
+{% block page_content %}
+<style>
+  .navbar, .web-footer, footer { display: none !important; }
+  body { background: #f1f3f6; }
+  .md-wrap { max-width: 1060px; margin: 0 auto; padding: 28px 16px 60px;
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .md-head { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 6px; }
+  .md-logo { font-size: 22px; font-weight: 800; letter-spacing: .5px; color: #1a2b4a; }
+  .md-badge { background: #fff3cd; color: #7a5b00; border: 1px solid #e6cf7a;
+    font-size: 11px; padding: 2px 10px; border-radius: 999px; font-weight: 600; }
+  .md-sub { color: #5b6675; font-size: 14px; margin-bottom: 24px; }
+  .md-chip { display: inline-block; background: #e8eef8; color: #1a2b4a; border-radius: 999px;
+    padding: 2px 12px; font-size: 12px; font-weight: 600; margin-left: 8px; }
+  .md-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
+  .md-card { background: #fff; border: 1px solid #e3e7ee; border-radius: 12px; padding: 18px;
+    text-decoration: none; color: inherit; position: relative; transition: box-shadow .15s, transform .15s; }
+  .md-card:hover { box-shadow: 0 6px 18px rgba(26,43,74,.10); transform: translateY(-2px); text-decoration: none; }
+  .md-card.disabled { opacity: .55; pointer-events: none; }
+  .md-icon { font-size: 26px; }
+  .md-name { font-weight: 700; font-size: 16px; margin: 8px 0 2px; color: #1a2b4a; }
+  .md-tag { font-size: 12.5px; color: #5b6675; line-height: 1.4; }
+  .md-count { position: absolute; top: 14px; right: 14px; background: #d93025; color: #fff;
+    font-size: 11px; font-weight: 700; min-width: 20px; text-align: center;
+    border-radius: 999px; padding: 2px 6px; display: none; }
+</style>
+
+<div class="md-wrap">
+  <div class="md-head">
+    <span class="md-logo">MERIDIAN &middot; My Desk</span>
+    <span class="md-badge">TRAINING SIMULATION &mdash; MERIDIAN SIM</span>
+  </div>
+  <div class="md-sub" id="md-sub">Loading your workday&hellip;</div>
+
+  <div class="md-grid">
+    <a class="md-card" href="/app">
+      <div class="md-icon">&#128202;</div>
+      <div class="md-name">LedgerDesk</div>
+      <div class="md-tag">Vouchers, ledgers, trial balance &mdash; the books</div>
+    </a>
+    <a class="md-card" href="/inboxpro">
+      <div class="md-icon">&#9993;&#65039;</div>
+      <div class="md-name">InboxPro</div>
+      <div class="md-tag">Email &mdash; boss, vendors, auditors, bank</div>
+      <span class="md-count" id="c-email"></span>
+    </a>
+    <a class="md-card" href="/pingdesk">
+      <div class="md-icon">&#128172;</div>
+      <div class="md-name">PingDesk</div>
+      <div class="md-tag">Chat &mdash; Rajan, Kavita, quick queries</div>
+      <span class="md-count" id="c-chat"></span>
+    </a>
+    <a class="md-card" href="/drivebox">
+      <div class="md-icon">&#128193;</div>
+      <div class="md-name">DriveBox</div>
+      <div class="md-tag">Invoices, statements, notices dropped here</div>
+      <span class="md-count" id="c-docs"></span>
+    </a>
+    <a class="md-card" href="/taxportal">
+      <div class="md-icon">&#127963;&#65039;</div>
+      <div class="md-name">TaxPortal &mdash; GST</div>
+      <div class="md-tag">GSTR-1, GSTR-3B filing &middot; GSTR-2B download</div>
+    </a>
+    <a class="md-card" href="/incometax">
+      <div class="md-icon">&#128176;</div>
+      <div class="md-name">Income Tax</div>
+      <div class="md-tag">e-Pay Tax &mdash; TDS challans (ITNS 281)</div>
+    </a>
+    <a class="md-card" href="/app/payroll-entry">
+      <div class="md-icon">&#129534;</div>
+      <div class="md-name">PayMate</div>
+      <div class="md-tag">Salary processing, payslips, deductions</div>
+    </a>
+    <a class="md-card disabled" href="#">
+      <div class="md-icon">&#128200;</div>
+      <div class="md-name">SheetWork</div>
+      <div class="md-tag">Spreadsheets &mdash; coming soon</div>
+    </a>
+  </div>
+</div>
+
+<script>
+frappe.ready(function () {
+  frappe.call({
+    method: "meridian_sim.api.desk_summary",
+    callback: function (r) {
+      if (!r.message) return;
+      var d = r.message;
+      var sub = document.getElementById("md-sub");
+      sub.innerHTML = "Accounts Executive &middot; " + d.company +
+        '<span class="md-chip">Week ' + d.sim_week + "</span>" +
+        '<span class="md-chip">' + d.status + "</span>";
+      var set = function (id, n) {
+        var el = document.getElementById(id);
+        if (el && n > 0) { el.textContent = n; el.style.display = "inline-block"; }
+      };
+      set("c-email", d.unread_email);
+      set("c-chat", d.unread_chat);
+    },
+    error: function () {
+      document.getElementById("md-sub").textContent =
+        "No active simulation instance is linked to your user yet.";
+    }
+  });
+});
+</script>
+{% endblock %}
