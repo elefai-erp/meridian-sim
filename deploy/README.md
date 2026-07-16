@@ -56,3 +56,24 @@ bench --site <site> set-config ai_model claude-sonnet-5
 
 Scheduler must be enabled on every student site (`bench --site <site>
 enable-scheduler`) — the story clock and consequence engine run on it.
+
+## Static assets on a split backend/frontend deployment
+
+If your compose topology splits `backend` (runs `bench build`) from a separate
+`frontend` nginx container — the frappe_docker default — `bench build`'s
+output under `sites/assets/<app>` is **not** automatically visible to
+`frontend` even when both mount the same `sites` named volume: `sites/assets`
+is a symlink to a path outside that volume, private to whichever container
+ran the build. `meridian_sim/public/` (logo, favicons, and any large media
+you add, e.g. an explainer video/PDF) needs an explicit bind mount into
+`frontend` alongside the one into `backend`:
+
+```yaml
+frontend:
+  volumes:
+    - /path/to/meridian-sim/meridian_sim/meridian_sim/public:/home/frappe/frappe-bench/assets/meridian_sim
+```
+
+Without it, `/assets/meridian_sim/...` 404s from the public site even though
+`bench build` reports success and the backend container can see the files
+fine. Restart `frontend` after adding the mount.

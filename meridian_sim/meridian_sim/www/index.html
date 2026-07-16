@@ -1,77 +1,116 @@
 {% extends "templates/web.html" %}
 
-{% block title %}Meridian Sim — Accounting Simulation Training Platform{% endblock %}
+{% block title %}Knowledge Bridge Academy — Meridian Sim, the Parallel Reality Training Engine{% endblock %}
 
 {% block page_content %}
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
   .navbar, .web-footer, footer.web-footer,
   .page-breadcrumbs, .page-header-wrapper { display: none !important; }
   .page_content, main.container { padding: 0 !important; margin: 0 !important; max-width: none !important; }
-  :root { --navy:#0f1f3d; --navy2:#14264a; --gold:#c9932e; --gold2:#e8b84b;
-    --ink:#1a2b4a; --muted:#5b6675; --bg:#f6f7fb; --card:#fff; --border:#e3e7ee; --r:12px; }
+  :root {
+    --navy-deep:#0a1e3c; --navy:#1e5c83; --navy2:#123a54;
+    --gold:#c4a041; --gold2:#e8c56b; --gold-deep:#8a6d1f;
+    --ink:#132338; --muted:#5b6675; --bg:#f5f7fa; --card:#fff; --border:#e3e7ee; --r:14px;
+  }
   * { box-sizing: border-box; }
-  body { background: var(--bg); font-family: -apple-system,"Segoe UI",Roboto,sans-serif; color: var(--ink); margin:0; }
-  a { color: #1a67d2; text-decoration: none; }
-  .ms-nav { background: var(--navy); color: #fff; display: flex; align-items: center; gap: 22px;
-    padding: 14px 26px; flex-wrap: wrap; position: sticky; top: 0; z-index: 40; }
-  .ms-brand { color: #fff; font-weight: 800; letter-spacing: .5px; font-size: 17px; }
-  .ms-brand span { color: var(--gold2); }
-  .ms-links { display: flex; gap: 18px; align-items: center; margin-left: auto; flex-wrap: wrap; font-size: 13.5px; }
-  .ms-links a { color: #cdd7ee; }
+  body { background: var(--bg); font-family: "Inter",-apple-system,"Segoe UI",Roboto,sans-serif;
+    color: var(--ink); margin:0; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3, .ms-brand-text { font-family: "Poppins","Inter",sans-serif; }
+  a { color: var(--navy); text-decoration: none; }
+  .ms-nav { background: var(--navy-deep); color: #fff; display: flex; align-items: center; gap: 22px;
+    padding: 12px 28px; flex-wrap: wrap; position: sticky; top: 0; z-index: 40;
+    box-shadow: 0 2px 14px rgba(0,0,0,.18); border-bottom: 1px solid rgba(196,160,65,.35); }
+  .ms-brand { display: flex; align-items: center; gap: 10px; color: #fff; }
+  .ms-brand img { height: 38px; width: 38px; display: block; }
+  .ms-brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+  .ms-brand-text b { font-weight: 800; font-size: 14.5px; letter-spacing: .3px; color: #fff; }
+  .ms-brand-text span { font-size: 9.5px; letter-spacing: 1.4px; color: var(--gold2); font-weight: 600; }
+  .ms-links { display: flex; gap: 19px; align-items: center; margin-left: auto; flex-wrap: wrap; font-size: 13.5px; }
+  .ms-links a { color: #c3cfe3; font-weight: 500; }
   .ms-links a:hover { color: #fff; }
-  .ms-cta-sm { background: var(--gold); color: #2b1d00 !important; padding: 6px 14px; border-radius: 999px; font-weight: 700; }
-  .ms-wrap { max-width: 980px; margin: 0 auto; padding: 0 18px 70px; }
-  .ms-hero { background: linear-gradient(135deg, var(--navy), var(--navy2)); color: #fff; margin: 0 0 30px;
-    padding: 54px 26px; text-align: center; }
-  .ms-hero h1 { font-size: 34px; margin: 0 0 12px; }
+  .ms-cta-sm { background: linear-gradient(135deg, var(--gold2), var(--gold)); color: #2b1d00 !important;
+    padding: 7px 16px; border-radius: 999px; font-weight: 700; }
+  .ms-wrap { max-width: 1000px; margin: 0 auto; padding: 0 20px 76px; }
+  .ms-hero { background: radial-gradient(circle at 20% -10%, #163a5c 0%, var(--navy-deep) 55%), var(--navy-deep);
+    color: #fff; margin: 0 0 34px; padding: 60px 26px 54px; text-align: center; position: relative; overflow: hidden;
+    border-bottom: 3px solid var(--gold); }
+  .ms-hero-logo { height: 96px; width: 96px; margin-bottom: 18px; filter: drop-shadow(0 6px 18px rgba(0,0,0,.4)); }
+  .ms-hero .kicker { color: var(--gold2); font-weight: 700; letter-spacing: 2px; font-size: 12px;
+    text-transform: uppercase; margin-bottom: 10px; }
+  .ms-hero h1 { font-size: 36px; margin: 0 0 4px; font-weight: 800; }
+  .ms-hero .engine { font-size: 15.5px; color: var(--gold2); font-weight: 600; margin-bottom: 16px; letter-spacing: .3px; }
   .ms-hero .tag { color: var(--gold2); font-weight: 700; letter-spacing: .4px; font-size: 12.5px;
     text-transform: uppercase; margin-bottom: 14px; }
-  .ms-hero p { max-width: 640px; margin: 0 auto 22px; color: #d7deee; font-size: 16px; line-height: 1.6; }
-  .ms-btn { display: inline-block; padding: 11px 24px; border-radius: 999px; font-weight: 700;
-    font-size: 14px; cursor: pointer; border: none; }
-  .ms-btn.primary { background: var(--gold); color: #2b1d00; }
-  .ms-btn.ghost { background: rgba(255,255,255,.12); color: #fff; border: 1px solid rgba(255,255,255,.4); margin-left: 10px; }
-  .ms-btn.blue { background: var(--navy); color: #fff; }
-  .ms-sec { margin: 40px 0; }
-  .ms-sec h2 { font-size: 22px; margin-bottom: 6px; color: var(--navy); }
-  .ms-sec .lede { color: var(--muted); margin-bottom: 20px; font-size: 14.5px; }
-  .ms-grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  .ms-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  @media (max-width: 760px) { .ms-grid3, .ms-grid2 { grid-template-columns: 1fr; } }
-  .ms-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; }
-  .ms-card h3 { margin: 0 0 8px; color: var(--navy); font-size: 16px; }
-  .ms-card p { font-size: 13.5px; color: var(--muted); line-height: 1.55; margin: 0; }
+  .ms-hero p { max-width: 640px; margin: 0 auto 24px; color: #d7deee; font-size: 16px; line-height: 1.65; }
+  .ms-btn { display: inline-block; padding: 12px 26px; border-radius: 999px; font-weight: 700;
+    font-size: 14px; cursor: pointer; border: none; transition: transform .12s, box-shadow .12s; }
+  .ms-btn:hover { transform: translateY(-1px); }
+  .ms-btn.primary { background: linear-gradient(135deg, var(--gold2), var(--gold)); color: #2b1d00;
+    box-shadow: 0 6px 18px rgba(196,160,65,.35); }
+  .ms-btn.ghost { background: rgba(255,255,255,.10); color: #fff; border: 1px solid rgba(255,255,255,.4); margin-left: 10px; }
+  .ms-btn.blue { background: var(--navy); color: #fff; box-shadow: 0 6px 16px rgba(30,92,131,.3); }
+  .ms-sec { margin: 46px 0; }
+  .ms-sec h2 { font-size: 24px; margin-bottom: 6px; color: var(--navy-deep); font-weight: 800; }
+  .ms-sec .lede { color: var(--muted); margin-bottom: 22px; font-size: 14.5px; line-height: 1.6; }
+  .ms-grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .ms-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 760px) { .ms-grid3, .ms-grid2 { grid-template-columns: 1fr; } .ms-hero h1 { font-size: 28px; } }
+  .ms-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 22px;
+    transition: box-shadow .15s, transform .15s; }
+  .ms-card:hover { box-shadow: 0 10px 26px rgba(10,30,60,.08); transform: translateY(-2px); }
+  .ms-card h3 { margin: 0 0 8px; color: var(--navy-deep); font-size: 16.5px; font-weight: 700; }
+  .ms-card p { font-size: 13.5px; color: var(--muted); line-height: 1.6; margin: 0; }
   table.ms { width: 100%; border-collapse: collapse; font-size: 13.5px; background: var(--card);
-    border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
-  table.ms th { background: #eef1f8; text-align: left; padding: 10px 12px; color: #33415e; font-size: 12px; }
-  table.ms td { padding: 10px 12px; border-top: 1px solid var(--border); }
-  .ms-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 10px;
-    border-radius: 999px; background: #e8f0fe; color: #1a67d2; }
-  .ms-badge.gold { background: #fbe9c6; color: #6b4c00; }
-  .ms-badge.navy { background: #dfe6f3; color: var(--navy); }
-  .ms-form { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 26px; }
+    border: 1px solid var(--border); border-radius: var(--r); overflow: hidden;
+    box-shadow: 0 2px 10px rgba(10,30,60,.04); }
+  table.ms th { background: var(--navy-deep); text-align: left; padding: 11px 14px; color: #fff; font-size: 12px;
+    font-weight: 600; letter-spacing: .2px; }
+  table.ms td { padding: 11px 14px; border-top: 1px solid var(--border); }
+  table.ms tr:hover td { background: #f8f9fc; }
+  .ms-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 11px;
+    border-radius: 999px; background: #e8f0fe; color: var(--navy); }
+  .ms-badge.gold { background: #fbedcc; color: var(--gold-deep); }
+  .ms-badge.navy { background: #dfe6f3; color: var(--navy-deep); }
+  .ms-form { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 28px;
+    box-shadow: 0 4px 18px rgba(10,30,60,.05); }
   .ms-form h3 { margin-top: 0; }
-  .ms-field { margin-bottom: 14px; }
+  .ms-field { margin-bottom: 15px; }
   .ms-field label { display: block; font-size: 12.5px; font-weight: 600; color: var(--muted); margin-bottom: 5px; }
   .ms-field .hint { font-size: 11.5px; color: #8a94a6; margin-top: 3px; }
-  .ms-field input, .ms-field select, .ms-field textarea { width: 100%; border: 1px solid #c9d3e0;
-    border-radius: 7px; padding: 9px 11px; font-size: 13.5px; font-family: inherit; }
+  .ms-field input, .ms-field select, .ms-field textarea { width: 100%; border: 1.5px solid #d7deea;
+    border-radius: 8px; padding: 10px 12px; font-size: 13.5px; font-family: inherit; transition: border-color .12s; }
+  .ms-field input:focus, .ms-field select:focus, .ms-field textarea:focus { outline: none; border-color: var(--navy); }
   .ms-field textarea { resize: vertical; }
   .ms-check { display: flex; align-items: center; gap: 8px; font-size: 13px; }
   .ms-check input { width: auto; }
-  .ms-fieldset { border: 1px solid var(--border); border-radius: var(--r); padding: 16px 18px; margin-bottom: 18px; }
-  .ms-fieldset legend { font-weight: 700; color: var(--navy); padding: 0 8px; font-size: 13.5px; }
+  .ms-fieldset { border: 1.5px solid var(--border); border-radius: var(--r); padding: 18px 20px; margin-bottom: 20px; }
+  .ms-fieldset legend { font-weight: 700; color: var(--navy-deep); padding: 0 8px; font-size: 13.5px; }
   .ms-success { display: none; background: #e6f4ea; border: 1px solid #b7dfc4; border-radius: var(--r);
     padding: 16px; color: #135c2d; font-size: 13.5px; margin-top: 14px; }
   .ms-empty { text-align: center; padding: 50px 20px; color: #8a94a6; font-size: 14px; }
-  .ms-foot { background: var(--navy); color: #b8c3dd; text-align: center; padding: 26px; font-size: 12.5px; margin-top: 40px; }
+  .ms-foot { background: var(--navy-deep); color: #aebbd6; text-align: center; padding: 30px 20px; font-size: 12.5px;
+    margin-top: 40px; border-top: 3px solid var(--gold); }
+  .ms-foot img { height: 26px; vertical-align: middle; margin-right: 8px; }
+  .ms-foot strong { color: #fff; }
   .ms-foot a { color: #dbe4f7; }
   .ms-quote { border-left: 3px solid var(--gold); padding-left: 16px; font-style: italic; color: var(--muted);
     margin: 18px 0; font-size: 14.5px; }
+  .ms-video-wrap { background: var(--navy-deep); border-radius: var(--r); padding: 8px; box-shadow: 0 10px 30px rgba(10,30,60,.18); }
+  .ms-video-wrap video { width: 100%; display: block; border-radius: 8px; background: #000; }
+  .ms-pdf-card { display: flex; gap: 20px; align-items: center; background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 18px; box-shadow: 0 4px 16px rgba(10,30,60,.05); flex-wrap: wrap; }
+  .ms-pdf-card img { width: 160px; border-radius: 8px; border: 1px solid var(--border); flex: none; }
+  .ms-pdf-card .txt { flex: 1; min-width: 220px; }
+  .ms-pdf-card h3 { margin: 0 0 6px; color: var(--navy-deep); }
+  .ms-pdf-card p { color: var(--muted); font-size: 13.5px; margin: 0 0 14px; line-height: 1.55; }
 </style>
 
 <nav class="ms-nav">
-  <a href="/" class="ms-brand">MERIDIAN <span>SIM</span></a>
+  <a href="/" class="ms-brand">
+    <img src="/assets/meridian_sim/images/kb-logo.png" alt="Knowledge Bridge Academy">
+    <span class="ms-brand-text"><b>KNOWLEDGE BRIDGE</b><span>ACADEMY</span></span>
+  </a>
   <div class="ms-links">
     <a href="/about">About</a>
     <a href="/students">Students</a>
@@ -89,13 +128,16 @@
 
 
 <div class="ms-hero">
-  <div class="tag">Open Source &middot; CA Community Driven &middot; Certification Platform</div>
+  <img src="/assets/meridian_sim/images/kb-logo.png" alt="Knowledge Bridge Academy" class="ms-hero-logo">
+  <div class="kicker">Knowledge Bridge Academy presents</div>
   <h1>Meridian Sim</h1>
+  <div class="engine">The Parallel Reality Training Engine</div>
+  <div class="tag">Open Source &middot; CA Community Driven &middot; Certification Platform</div>
   <p>Not a course &mdash; a parallel reality job. A 3-month immersive simulation where you
     become the accountant of a fictional company, working real hours, using mock
     versions of real accounting software, and living with the consequences of every
     decision you make.</p>
-  <p style="font-style:italic;color:#e8b84b;font-size:15px">"The student does not know what is being tested. They just come to work every day."</p>
+  <p style="font-style:italic;color:#e8c56b;font-size:15px">"The student does not know what is being tested. They just come to work every day."</p>
   <a href="/students" class="ms-btn primary">Become a Student</a>
   <a href="/contribute" class="ms-btn ghost">Become a Contributor</a>
 </div>
@@ -143,12 +185,42 @@
       </div>
     </div>
   </div>
+
+  <div class="ms-sec">
+    <h2>Watch how it works</h2>
+    <p class="lede">Two minutes on what makes Meridian Sim different &mdash; straight from Knowledge Bridge Academy.</p>
+    <div class="ms-video-wrap">
+      <video controls preload="metadata" poster="/assets/meridian_sim/images/kb-explainer-poster.jpg">
+        <source src="/assets/meridian_sim/video/kb-explainer.mp4" type="video/mp4">
+        Your browser doesn't support embedded video &mdash;
+        <a href="/assets/meridian_sim/video/kb-explainer.mp4">download it here</a>.
+      </video>
+    </div>
+  </div>
+
+  <div class="ms-sec">
+    <h2>Read the full explainer</h2>
+    <p class="lede">The complete Knowledge Bridge Academy &amp; Meridian Sim deck &mdash; vision, the 3-month arc,
+      the certification ladder, and the contributor accountability model.</p>
+    <div class="ms-pdf-card">
+      <img src="/assets/meridian_sim/images/kb-explainer-poster.jpg" alt="Explainer deck preview">
+      <div class="txt">
+        <h3>Knowledge Bridge Academy &mdash; Explainer Deck</h3>
+        <p>14 slides covering the platform vision, the simulation arc, the certification ladder, and
+          the CA contributor accountability model (PDF).</p>
+        <a href="/assets/meridian_sim/docs/knowledge-bridge-academy-explainer.pdf" target="_blank"
+           rel="noopener" class="ms-btn blue">Open the Explainer PDF</a>
+      </div>
+    </div>
+  </div>
 </div>
 
 
 <footer class="ms-foot">
-  <div><strong>MERIDIAN SIM</strong> &mdash; an accounting simulation training platform. Not a course. A parallel reality job.</div>
-  <div style="margin-top:8px">Open Source Project &middot; CA Community Driven &middot;
+  <div><img src="/assets/meridian_sim/images/kb-logo.png" alt=""><strong>Knowledge Bridge Academy</strong>
+    &mdash; a CA-community platform training students on <strong>Meridian Sim</strong>,
+    the parallel-reality accounting training engine. Not a course. A 3-month job.</div>
+  <div style="margin-top:10px">Open Source Project &middot; CA Community Driven &middot;
     <a href="https://github.com/elefai-erp/meridian-sim" target="_blank" rel="noopener">GitHub</a> &middot;
     AGPL-3.0 code &middot; CC BY-SA 4.0 content</div>
 </footer>

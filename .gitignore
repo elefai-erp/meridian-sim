@@ -28,3 +28,7 @@ pgdata/
 # Python
 __pycache__/
 *.pyc
+
+# Large marketing binaries — served from disk, not committed to the repo
+meridian_sim/meridian_sim/public/video/
+meridian_sim/meridian_sim/public/docs/
