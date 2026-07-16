@@ -1,0 +1,197 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "hash",
+ "creation": "2026-07-17 09:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "contributor_name",
+  "contributor_email",
+  "membership_no",
+  "specialization",
+  "city",
+  "years_of_practice",
+  "title",
+  "domain",
+  "difficulty",
+  "situation",
+  "student_task",
+  "common_wrong",
+  "correct_treatment",
+  "law_reference",
+  "rajan_advice",
+  "rajan_why_wrong",
+  "consequence_what",
+  "consequence_week",
+  "supporting_file",
+  "status",
+  "reviewer_notes",
+  "linked_contributor",
+  "submitted_on"
+ ],
+ "fields": [
+  {
+   "fieldname": "contributor_name",
+   "fieldtype": "Data",
+   "label": "Your Name",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "contributor_email",
+   "fieldtype": "Data",
+   "label": "Your Email",
+   "reqd": 1,
+   "options": "Email"
+  },
+  {
+   "fieldname": "membership_no",
+   "fieldtype": "Data",
+   "label": "Membership No."
+  },
+  {
+   "fieldname": "specialization",
+   "fieldtype": "Select",
+   "label": "Your Specialisation",
+   "options": "gst\ntds\npayroll\nbank-reco\nfinalization\nvendor-mgmt\nmis\nother"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fieldname": "years_of_practice",
+   "fieldtype": "Int",
+   "label": "Years of Practice"
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Scenario Title",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "domain",
+   "fieldtype": "Select",
+   "label": "Domain",
+   "options": "gst\ntds\npayroll\nbank-reco\nfinalization\nvendor-mgmt\nmis\nother",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "difficulty",
+   "fieldtype": "Select",
+   "label": "Difficulty",
+   "options": "Junior\nMid\nSenior",
+   "default": "Junior"
+  },
+  {
+   "fieldname": "situation",
+   "fieldtype": "Long Text",
+   "label": "The Situation (plain English)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "student_task",
+   "fieldtype": "Long Text",
+   "label": "What should the student do?",
+   "reqd": 1
+  },
+  {
+   "fieldname": "common_wrong",
+   "fieldtype": "Long Text",
+   "label": "What does a lazy/wrong student typically do?"
+  },
+  {
+   "fieldname": "correct_treatment",
+   "fieldtype": "Long Text",
+   "label": "The correct treatment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "law_reference",
+   "fieldtype": "Data",
+   "label": "Section / Rule / Circular Reference",
+   "reqd": 1
+  },
+  {
+   "fieldname": "rajan_advice",
+   "fieldtype": "Long Text",
+   "label": "What would a vague/wrong manager say?"
+  },
+  {
+   "fieldname": "rajan_why_wrong",
+   "fieldtype": "Long Text",
+   "label": "Why is that wrong, incomplete, or outdated?"
+  },
+  {
+   "fieldname": "consequence_what",
+   "fieldtype": "Long Text",
+   "label": "If the student gets this wrong, what happens later?"
+  },
+  {
+   "fieldname": "consequence_week",
+   "fieldtype": "Data",
+   "label": "Which week does the consequence surface?"
+  },
+  {
+   "fieldname": "supporting_file",
+   "fieldtype": "Attach",
+   "label": "Supporting Document (optional)"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Submitted\nUnder Review\nApproved\nRejected\nLive",
+   "default": "Submitted",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "reviewer_notes",
+   "fieldtype": "Small Text",
+   "label": "Reviewer Notes"
+  },
+  {
+   "fieldname": "linked_contributor",
+   "fieldtype": "Link",
+   "label": "Linked Contributor",
+   "options": "Contributor"
+  },
+  {
+   "fieldname": "submitted_on",
+   "fieldtype": "Datetime",
+   "label": "Submitted On",
+   "in_list_view": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-07-17 09:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Meridian Sim",
+ "name": "Scenario Submission",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "email": 1,
+   "print": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

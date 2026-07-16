@@ -1,0 +1,151 @@
+{% extends "templates/web.html" %}
+
+{% block title %}Apply to Enroll — Meridian Sim{% endblock %}
+
+{% block page_content %}
+<style>
+  .navbar, .web-footer, footer.web-footer,
+  .page-breadcrumbs, .page-header-wrapper { display: none !important; }
+  .page_content, main.container { padding: 0 !important; margin: 0 !important; max-width: none !important; }
+  :root { --navy:#0f1f3d; --navy2:#14264a; --gold:#c9932e; --gold2:#e8b84b;
+    --ink:#1a2b4a; --muted:#5b6675; --bg:#f6f7fb; --card:#fff; --border:#e3e7ee; --r:12px; }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); font-family: -apple-system,"Segoe UI",Roboto,sans-serif; color: var(--ink); margin:0; }
+  a { color: #1a67d2; text-decoration: none; }
+  .ms-nav { background: var(--navy); color: #fff; display: flex; align-items: center; gap: 22px;
+    padding: 14px 26px; flex-wrap: wrap; position: sticky; top: 0; z-index: 40; }
+  .ms-brand { color: #fff; font-weight: 800; letter-spacing: .5px; font-size: 17px; }
+  .ms-brand span { color: var(--gold2); }
+  .ms-links { display: flex; gap: 18px; align-items: center; margin-left: auto; flex-wrap: wrap; font-size: 13.5px; }
+  .ms-links a { color: #cdd7ee; }
+  .ms-links a:hover { color: #fff; }
+  .ms-cta-sm { background: var(--gold); color: #2b1d00 !important; padding: 6px 14px; border-radius: 999px; font-weight: 700; }
+  .ms-wrap { max-width: 980px; margin: 0 auto; padding: 0 18px 70px; }
+  .ms-hero { background: linear-gradient(135deg, var(--navy), var(--navy2)); color: #fff; margin: 0 0 30px;
+    padding: 54px 26px; text-align: center; }
+  .ms-hero h1 { font-size: 34px; margin: 0 0 12px; }
+  .ms-hero .tag { color: var(--gold2); font-weight: 700; letter-spacing: .4px; font-size: 12.5px;
+    text-transform: uppercase; margin-bottom: 14px; }
+  .ms-hero p { max-width: 640px; margin: 0 auto 22px; color: #d7deee; font-size: 16px; line-height: 1.6; }
+  .ms-btn { display: inline-block; padding: 11px 24px; border-radius: 999px; font-weight: 700;
+    font-size: 14px; cursor: pointer; border: none; }
+  .ms-btn.primary { background: var(--gold); color: #2b1d00; }
+  .ms-btn.ghost { background: rgba(255,255,255,.12); color: #fff; border: 1px solid rgba(255,255,255,.4); margin-left: 10px; }
+  .ms-btn.blue { background: var(--navy); color: #fff; }
+  .ms-sec { margin: 40px 0; }
+  .ms-sec h2 { font-size: 22px; margin-bottom: 6px; color: var(--navy); }
+  .ms-sec .lede { color: var(--muted); margin-bottom: 20px; font-size: 14.5px; }
+  .ms-grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .ms-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .ms-grid3, .ms-grid2 { grid-template-columns: 1fr; } }
+  .ms-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; }
+  .ms-card h3 { margin: 0 0 8px; color: var(--navy); font-size: 16px; }
+  .ms-card p { font-size: 13.5px; color: var(--muted); line-height: 1.55; margin: 0; }
+  table.ms { width: 100%; border-collapse: collapse; font-size: 13.5px; background: var(--card);
+    border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+  table.ms th { background: #eef1f8; text-align: left; padding: 10px 12px; color: #33415e; font-size: 12px; }
+  table.ms td { padding: 10px 12px; border-top: 1px solid var(--border); }
+  .ms-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 10px;
+    border-radius: 999px; background: #e8f0fe; color: #1a67d2; }
+  .ms-badge.gold { background: #fbe9c6; color: #6b4c00; }
+  .ms-badge.navy { background: #dfe6f3; color: var(--navy); }
+  .ms-form { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 26px; }
+  .ms-form h3 { margin-top: 0; }
+  .ms-field { margin-bottom: 14px; }
+  .ms-field label { display: block; font-size: 12.5px; font-weight: 600; color: var(--muted); margin-bottom: 5px; }
+  .ms-field .hint { font-size: 11.5px; color: #8a94a6; margin-top: 3px; }
+  .ms-field input, .ms-field select, .ms-field textarea { width: 100%; border: 1px solid #c9d3e0;
+    border-radius: 7px; padding: 9px 11px; font-size: 13.5px; font-family: inherit; }
+  .ms-field textarea { resize: vertical; }
+  .ms-check { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .ms-check input { width: auto; }
+  .ms-fieldset { border: 1px solid var(--border); border-radius: var(--r); padding: 16px 18px; margin-bottom: 18px; }
+  .ms-fieldset legend { font-weight: 700; color: var(--navy); padding: 0 8px; font-size: 13.5px; }
+  .ms-success { display: none; background: #e6f4ea; border: 1px solid #b7dfc4; border-radius: var(--r);
+    padding: 16px; color: #135c2d; font-size: 13.5px; margin-top: 14px; }
+  .ms-empty { text-align: center; padding: 50px 20px; color: #8a94a6; font-size: 14px; }
+  .ms-foot { background: var(--navy); color: #b8c3dd; text-align: center; padding: 26px; font-size: 12.5px; margin-top: 40px; }
+  .ms-foot a { color: #dbe4f7; }
+  .ms-quote { border-left: 3px solid var(--gold); padding-left: 16px; font-style: italic; color: var(--muted);
+    margin: 18px 0; font-size: 14.5px; }
+</style>
+
+<nav class="ms-nav">
+  <a href="/" class="ms-brand">MERIDIAN <span>SIM</span></a>
+  <div class="ms-links">
+    <a href="/about">About</a>
+    <a href="/students">Students</a>
+    <a href="/students/leaderboard">Rankings</a>
+    <a href="/contribute">Contribute</a>
+    <a href="/contribute/leaderboard">Contributors</a>
+    <a href="https://github.com/elefai-erp/meridian-sim" target="_blank" rel="noopener">GitHub</a>
+    {% if frappe.session.user and frappe.session.user != "Guest" %}
+    <a href="/mydesk" class="ms-cta-sm">My Desk</a>
+    {% else %}
+    <a href="/students/apply" class="ms-cta-sm">Enroll</a>
+    {% endif %}
+  </div>
+</nav>
+
+
+<div class="ms-wrap" style="padding-top:36px;max-width:640px">
+  <h2 style="color:var(--navy)">Apply to enroll</h2>
+  <p class="lede">Tell us a bit about yourself. An administrator will review your application and set up
+    your Meridian Trading instance &mdash; you'll be notified at the email you provide.</p>
+  <div class="ms-form">
+    <div class="ms-field"><label>Full Name *</label><input id="f-name"></div>
+    <div class="ms-field"><label>Email *</label><input id="f-email" type="email"></div>
+    <div class="ms-field"><label>Phone</label><input id="f-phone"></div>
+    <div class="ms-field"><label>City</label><input id="f-city"></div>
+    <div class="ms-field"><label>Education / Background</label><input id="f-edu" placeholder="e.g. B.Com pursuing, final year"></div>
+    <div class="ms-field">
+      <label>Level you're interested in</label>
+      <select id="f-level">
+        <option value="accounts-assistant">Level 1 &mdash; Accounts Assistant</option>
+        <option value="junior-accountant" selected>Level 2 &mdash; Junior Accountant</option>
+        <option value="senior-accountant">Level 3 &mdash; Senior Accountant</option>
+        <option value="accounts-manager">Level 4 &mdash; Accounts Manager</option>
+        <option value="finance-controller">Level 5 &mdash; Finance Controller</option>
+      </select>
+      <div class="hint">Most students start at Level 2 &mdash; it's the first level fully built.</div>
+    </div>
+    <div class="ms-field"><label>Why do you want to join?</label><textarea id="f-why" rows="4"></textarea></div>
+    <button class="ms-btn blue" onclick="submitStudent()">Submit Application</button>
+    <div class="ms-success" id="ok">&#9989; Application received. We'll be in touch by email.</div>
+  </div>
+</div>
+
+
+<footer class="ms-foot">
+  <div><strong>MERIDIAN SIM</strong> &mdash; an accounting simulation training platform. Not a course. A parallel reality job.</div>
+  <div style="margin-top:8px">Open Source Project &middot; CA Community Driven &middot;
+    <a href="https://github.com/elefai-erp/meridian-sim" target="_blank" rel="noopener">GitHub</a> &middot;
+    AGPL-3.0 code &middot; CC BY-SA 4.0 content</div>
+</footer>
+
+<script>
+function esc(s) { var d = document.createElement("div"); d.textContent = s || ""; return d.innerHTML; }
+
+function submitStudent() {
+  var name = document.getElementById("f-name").value.trim();
+  var email = document.getElementById("f-email").value.trim();
+  if (!name || !email) { alert("Name and email are required"); return; }
+  frappe.call({
+    method: "meridian_sim.public.submit_student_application",
+    args: {
+      full_name: name, email: email,
+      phone: document.getElementById("f-phone").value,
+      city: document.getElementById("f-city").value,
+      education: document.getElementById("f-edu").value,
+      level_interested: document.getElementById("f-level").value,
+      why_join: document.getElementById("f-why").value
+    },
+    callback: function () {
+      document.getElementById("ok").style.display = "block";
+      document.querySelectorAll(".ms-field input, .ms-field textarea").forEach(function (e) { e.value = ""; });
+    }
+  });
+}
+
+</script>
+{% endblock %}

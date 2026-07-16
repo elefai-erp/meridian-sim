@@ -6,4 +6,6 @@ def get_context(context):
         frappe.local.flags.redirect_location = "/login?redirect-to=/incometax"
         raise frappe.Redirect
     context.no_cache = 1
+    context.full_width = 1
+    context.show_sidebar = 0
     return context

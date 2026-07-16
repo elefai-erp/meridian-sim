@@ -1,0 +1,169 @@
+{% extends "templates/web.html" %}
+
+{% block title %}For Contributors — Meridian Sim{% endblock %}
+
+{% block page_content %}
+<style>
+  .navbar, .web-footer, footer.web-footer,
+  .page-breadcrumbs, .page-header-wrapper { display: none !important; }
+  .page_content, main.container { padding: 0 !important; margin: 0 !important; max-width: none !important; }
+  :root { --navy:#0f1f3d; --navy2:#14264a; --gold:#c9932e; --gold2:#e8b84b;
+    --ink:#1a2b4a; --muted:#5b6675; --bg:#f6f7fb; --card:#fff; --border:#e3e7ee; --r:12px; }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); font-family: -apple-system,"Segoe UI",Roboto,sans-serif; color: var(--ink); margin:0; }
+  a { color: #1a67d2; text-decoration: none; }
+  .ms-nav { background: var(--navy); color: #fff; display: flex; align-items: center; gap: 22px;
+    padding: 14px 26px; flex-wrap: wrap; position: sticky; top: 0; z-index: 40; }
+  .ms-brand { color: #fff; font-weight: 800; letter-spacing: .5px; font-size: 17px; }
+  .ms-brand span { color: var(--gold2); }
+  .ms-links { display: flex; gap: 18px; align-items: center; margin-left: auto; flex-wrap: wrap; font-size: 13.5px; }
+  .ms-links a { color: #cdd7ee; }
+  .ms-links a:hover { color: #fff; }
+  .ms-cta-sm { background: var(--gold); color: #2b1d00 !important; padding: 6px 14px; border-radius: 999px; font-weight: 700; }
+  .ms-wrap { max-width: 980px; margin: 0 auto; padding: 0 18px 70px; }
+  .ms-hero { background: linear-gradient(135deg, var(--navy), var(--navy2)); color: #fff; margin: 0 0 30px;
+    padding: 54px 26px; text-align: center; }
+  .ms-hero h1 { font-size: 34px; margin: 0 0 12px; }
+  .ms-hero .tag { color: var(--gold2); font-weight: 700; letter-spacing: .4px; font-size: 12.5px;
+    text-transform: uppercase; margin-bottom: 14px; }
+  .ms-hero p { max-width: 640px; margin: 0 auto 22px; color: #d7deee; font-size: 16px; line-height: 1.6; }
+  .ms-btn { display: inline-block; padding: 11px 24px; border-radius: 999px; font-weight: 700;
+    font-size: 14px; cursor: pointer; border: none; }
+  .ms-btn.primary { background: var(--gold); color: #2b1d00; }
+  .ms-btn.ghost { background: rgba(255,255,255,.12); color: #fff; border: 1px solid rgba(255,255,255,.4); margin-left: 10px; }
+  .ms-btn.blue { background: var(--navy); color: #fff; }
+  .ms-sec { margin: 40px 0; }
+  .ms-sec h2 { font-size: 22px; margin-bottom: 6px; color: var(--navy); }
+  .ms-sec .lede { color: var(--muted); margin-bottom: 20px; font-size: 14.5px; }
+  .ms-grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .ms-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .ms-grid3, .ms-grid2 { grid-template-columns: 1fr; } }
+  .ms-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; }
+  .ms-card h3 { margin: 0 0 8px; color: var(--navy); font-size: 16px; }
+  .ms-card p { font-size: 13.5px; color: var(--muted); line-height: 1.55; margin: 0; }
+  table.ms { width: 100%; border-collapse: collapse; font-size: 13.5px; background: var(--card);
+    border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+  table.ms th { background: #eef1f8; text-align: left; padding: 10px 12px; color: #33415e; font-size: 12px; }
+  table.ms td { padding: 10px 12px; border-top: 1px solid var(--border); }
+  .ms-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 10px;
+    border-radius: 999px; background: #e8f0fe; color: #1a67d2; }
+  .ms-badge.gold { background: #fbe9c6; color: #6b4c00; }
+  .ms-badge.navy { background: #dfe6f3; color: var(--navy); }
+  .ms-form { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 26px; }
+  .ms-form h3 { margin-top: 0; }
+  .ms-field { margin-bottom: 14px; }
+  .ms-field label { display: block; font-size: 12.5px; font-weight: 600; color: var(--muted); margin-bottom: 5px; }
+  .ms-field .hint { font-size: 11.5px; color: #8a94a6; margin-top: 3px; }
+  .ms-field input, .ms-field select, .ms-field textarea { width: 100%; border: 1px solid #c9d3e0;
+    border-radius: 7px; padding: 9px 11px; font-size: 13.5px; font-family: inherit; }
+  .ms-field textarea { resize: vertical; }
+  .ms-check { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .ms-check input { width: auto; }
+  .ms-fieldset { border: 1px solid var(--border); border-radius: var(--r); padding: 16px 18px; margin-bottom: 18px; }
+  .ms-fieldset legend { font-weight: 700; color: var(--navy); padding: 0 8px; font-size: 13.5px; }
+  .ms-success { display: none; background: #e6f4ea; border: 1px solid #b7dfc4; border-radius: var(--r);
+    padding: 16px; color: #135c2d; font-size: 13.5px; margin-top: 14px; }
+  .ms-empty { text-align: center; padding: 50px 20px; color: #8a94a6; font-size: 14px; }
+  .ms-foot { background: var(--navy); color: #b8c3dd; text-align: center; padding: 26px; font-size: 12.5px; margin-top: 40px; }
+  .ms-foot a { color: #dbe4f7; }
+  .ms-quote { border-left: 3px solid var(--gold); padding-left: 16px; font-style: italic; color: var(--muted);
+    margin: 18px 0; font-size: 14.5px; }
+</style>
+
+<nav class="ms-nav">
+  <a href="/" class="ms-brand">MERIDIAN <span>SIM</span></a>
+  <div class="ms-links">
+    <a href="/about">About</a>
+    <a href="/students">Students</a>
+    <a href="/students/leaderboard">Rankings</a>
+    <a href="/contribute">Contribute</a>
+    <a href="/contribute/leaderboard">Contributors</a>
+    <a href="https://github.com/elefai-erp/meridian-sim" target="_blank" rel="noopener">GitHub</a>
+    {% if frappe.session.user and frappe.session.user != "Guest" %}
+    <a href="/mydesk" class="ms-cta-sm">My Desk</a>
+    {% else %}
+    <a href="/students/apply" class="ms-cta-sm">Enroll</a>
+    {% endif %}
+  </div>
+</nav>
+
+
+<div class="ms-hero" style="padding:40px 26px">
+  <div class="tag">For CA / Finance Professionals</div>
+  <h1 style="font-size:28px">Write the scenarios. No GitHub required.</h1>
+  <p>Every scenario in production carries your name and membership number. You write in plain English
+    through a form &mdash; a Domain Reviewer verifies it, and it goes live to every student who reaches that week.</p>
+  <a href="/contribute/submit" class="ms-btn primary">Submit a Scenario</a>
+  <a href="/contribute/apply" class="ms-btn ghost">Join the Community First</a>
+</div>
+
+<div class="ms-wrap">
+  <div class="ms-sec">
+    <h2>Three contributor roles</h2>
+    <div class="ms-grid3">
+      <div class="ms-card">
+        <span class="ms-badge">Entry level</span>
+        <h3 style="margin-top:10px">Scenario Author</h3>
+        <p>Write scenario cards &mdash; situations, tasks, hidden errors, consequences, and your manager
+          character's deliberately bad advice, with the correct treatment and law reference.</p>
+        <p style="margin-top:10px;font-size:12px;color:var(--muted)"><strong>Eligibility:</strong> CA/CMA/CS
+          (any stage) or B.Com/M.Com with 3+ years' experience. Your first scenario is your work sample.</p>
+      </div>
+      <div class="ms-card">
+        <span class="ms-badge gold">Invitation only</span>
+        <h3 style="margin-top:10px">Domain Reviewer</h3>
+        <p>The quality gate. Owns one domain entirely &mdash; nothing goes live in GST, TDS, Payroll, or
+          five other domains without their sign-off.</p>
+        <p style="margin-top:10px;font-size:12px;color:var(--muted)"><strong>Eligibility:</strong> CA/CMA
+          qualified, 5+ years post-qualification in the domain. Nominated by the Core Team.</p>
+      </div>
+      <div class="ms-card">
+        <span class="ms-badge navy">Invitation only &middot; max 7</span>
+        <h3 style="margin-top:10px">Core Contributor</h3>
+        <p>Shapes curriculum structure, level design, and character behaviour. Maintains the Company Bible.
+          Resolves disputes.</p>
+        <p style="margin-top:10px;font-size:12px;color:var(--muted)"><strong>Eligibility:</strong> 10+ approved
+          scenarios authored, 20+ reviews completed, 1-year commitment.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ms-sec">
+    <h2>The progression path</h2>
+    <p style="font-size:14.5px;color:var(--ink)">Anyone &rarr; <strong>Scenario Author</strong> (after your sample scenario passes review)
+      &rarr; <strong>Domain Reviewer</strong> (invitation, after ~5 approved scenarios + demonstrated domain depth)
+      &rarr; <strong>Core Contributor</strong> (invitation, after 10 authored + 20 reviewed + long-term commitment).
+      No one joins as Core Contributor on day one &mdash; not even founding team members.</p>
+  </div>
+
+  <div class="ms-sec">
+    <h2>What you receive</h2>
+    <table class="ms">
+      <thead><tr><th>Benefit</th><th>Scenario Author</th><th>Domain Reviewer</th><th>Core Contributor</th></tr></thead>
+      <tbody>
+        <tr><td>Named credit on every scenario you touch</td><td>&#10003; as Author</td><td>&#10003; as Reviewer</td><td>&#10003;</td></tr>
+        <tr><td>LinkedIn-shareable contributor badge</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>Domain Expert designation</td><td>&mdash;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>Curriculum decision input</td><td>&mdash;</td><td>&mdash;</td><td>&#10003;</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ms-sec" style="text-align:center">
+    <a href="/contribute/submit" class="ms-btn blue">Submit Your First Scenario &rarr;</a>
+  </div>
+</div>
+
+
+<footer class="ms-foot">
+  <div><strong>MERIDIAN SIM</strong> &mdash; an accounting simulation training platform. Not a course. A parallel reality job.</div>
+  <div style="margin-top:8px">Open Source Project &middot; CA Community Driven &middot;
+    <a href="https://github.com/elefai-erp/meridian-sim" target="_blank" rel="noopener">GitHub</a> &middot;
+    AGPL-3.0 code &middot; CC BY-SA 4.0 content</div>
+</footer>
+
+<script>
+function esc(s) { var d = document.createElement("div"); d.textContent = s || ""; return d.innerHTML; }
+
+</script>
+{% endblock %}

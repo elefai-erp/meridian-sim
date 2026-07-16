@@ -1,0 +1,130 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "hash",
+ "creation": "2026-07-17 09:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "full_name",
+  "email",
+  "phone",
+  "membership_body",
+  "membership_no",
+  "city",
+  "years_of_practice",
+  "specialization",
+  "completed_level2",
+  "motivation",
+  "status",
+  "linked_contributor",
+  "applied_on"
+ ],
+ "fields": [
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "Full Name",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email",
+   "reqd": 1,
+   "options": "Email",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Data",
+   "label": "Phone"
+  },
+  {
+   "fieldname": "membership_body",
+   "fieldtype": "Select",
+   "label": "Membership Body",
+   "options": "ICAI\nICMAI\nICSI\nOther\nPursuing / Not yet qualified",
+   "default": "ICAI"
+  },
+  {
+   "fieldname": "membership_no",
+   "fieldtype": "Data",
+   "label": "Membership No. (if any)"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fieldname": "years_of_practice",
+   "fieldtype": "Int",
+   "label": "Years of Practical Experience"
+  },
+  {
+   "fieldname": "specialization",
+   "fieldtype": "Select",
+   "label": "Specialisation Area",
+   "options": "gst\ntds\npayroll\nbank-reco\nfinalization\nvendor-mgmt\nmis\nother",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "completed_level2",
+   "fieldtype": "Check",
+   "label": "I have personally completed the Level 2 simulation"
+  },
+  {
+   "fieldname": "motivation",
+   "fieldtype": "Small Text",
+   "label": "Why do you want to contribute?"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "New\nIn Review\nApproved\nRejected",
+   "default": "New",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "linked_contributor",
+   "fieldtype": "Link",
+   "label": "Linked Contributor",
+   "options": "Contributor"
+  },
+  {
+   "fieldname": "applied_on",
+   "fieldtype": "Datetime",
+   "label": "Applied On",
+   "in_list_view": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-07-17 09:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Meridian Sim",
+ "name": "Contributor Application",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "email": 1,
+   "print": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
