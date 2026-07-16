@@ -17,6 +17,22 @@ def _require(value, label):
         frappe.throw(f"{label} is required")
 
 
+def _notify_reviewers(reference_type, reference_name, description, priority="Medium"):
+    """Assign a ToDo to every System Manager — works with zero email/SMTP
+    configuration, surfaces in the Frappe desk notification bell immediately.
+    If a real outgoing Email Account is ever configured, this is the one
+    place to add frappe.sendmail() too."""
+    reviewers = frappe.get_all(
+        "Has Role", filters={"role": "System Manager", "parenttype": "User"}, pluck="parent"
+    )
+    for user in set(reviewers):
+        frappe.get_doc({
+            "doctype": "ToDo", "allocated_to": user, "status": "Open", "priority": priority,
+            "reference_type": reference_type, "reference_name": reference_name,
+            "description": description,
+        }).insert(ignore_permissions=True)
+
+
 # ------------------------------------------------------------ enrollment ---
 
 @frappe.whitelist(allow_guest=True)
@@ -31,6 +47,8 @@ def submit_student_application(full_name, email, phone=None, city=None,
         "level_interested": level_interested, "why_join": why_join,
         "status": "New", "applied_on": now(),
     }).insert(ignore_permissions=True)
+    _notify_reviewers("Student Application", doc.name,
+                       f"New student application: {doc.full_name} ({doc.level_interested})")
     frappe.db.commit()
     return {"name": doc.name}
 
@@ -52,6 +70,8 @@ def submit_contributor_application(full_name, email, specialization, phone=None,
         "specialization": specialization, "completed_level2": int(bool(int(completed_level2 or 0))),
         "motivation": motivation, "status": "New", "applied_on": now(),
     }).insert(ignore_permissions=True)
+    _notify_reviewers("Contributor Application", doc.name,
+                       f"New contributor application: {doc.full_name} ({doc.specialization})")
     frappe.db.commit()
     return {"name": doc.name}
 
@@ -85,6 +105,9 @@ def submit_scenario(contributor_name, contributor_email, title, domain, situatio
     if existing:
         doc.linked_contributor = existing
     doc.insert(ignore_permissions=True)
+    _notify_reviewers("Scenario Submission", doc.name,
+                       f"New scenario submission: \"{doc.title}\" ({doc.domain}) by {doc.contributor_name}",
+                       priority="High")
     frappe.db.commit()
     return {"name": doc.name}
 
