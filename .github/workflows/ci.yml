@@ -26,7 +26,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Lint (ruff)
-        run: pipx run ruff check meridian_sim
+        run: pipx run ruff==0.17.5 check meridian_sim
       - name: Syntax check
         run: python3 -m compileall -q meridian_sim
       - name: Pure simulation-core tests (no bench)
