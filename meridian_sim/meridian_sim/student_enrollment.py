@@ -1,6 +1,7 @@
 """Student enrollment, triggered when a Student Application is set to Enrolled.
 
-Creates (idempotently) a Website User login with the "Meridian Student" role,
+Creates (idempotently) a desk (System User) login with the "Meridian Student" role plus
+LedgerDesk roles,
 an Active Week-1 Sim Instance (demo story content) linked back to the application, and emails the student
 a set-password link plus the sign-in URL. No plaintext password is ever sent.
 
@@ -18,6 +19,9 @@ from frappe.utils import get_url
 from meridian_sim.notify import notify_reviewers
 
 ROLE = "Meridian Student"
+# Desk roles so LedgerDesk (/app) opens. Not Accounts Manager: students must not
+# cancel/reverse other people's entries. Books are shared until per-student sites exist.
+DESK_ROLES = ("Accounts User", "Sales User", "Purchase User")
 
 
 def _ensure_role():
@@ -37,10 +41,14 @@ def _ensure_user(app):
             "doctype": "User", "email": email, "first_name": parts[0],
             "last_name": parts[1] if len(parts) > 1 else "",
             "mobile_no": app.phone or None,
-            "send_welcome_email": 0, "user_type": "Website User",
+            "send_welcome_email": 0, "user_type": "System User",
         }).insert(ignore_permissions=True)
-    if ROLE not in [r.role for r in user.roles]:
-        user.append("roles", {"role": ROLE})
+    have = {r.role for r in user.roles}
+    missing = [r for r in (ROLE, *DESK_ROLES) if r not in have]
+    for r in missing:
+        user.append("roles", {"role": r})
+    if missing or user.user_type != "System User":
+        user.user_type = "System User"
         user.save(ignore_permissions=True)
     return user
 
