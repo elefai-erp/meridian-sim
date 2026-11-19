@@ -1,13 +1,12 @@
 """Student enrollment, triggered when a Student Application is set to Enrolled.
 
 Creates (idempotently) a Website User login with the "Meridian Student" role,
-a Sim Instance in Draft linked back to the application, and emails the student
+an Active Week-1 Sim Instance (demo story content) linked back to the application, and emails the student
 a set-password link plus the sign-in URL. No plaintext password is ever sent.
 
-The Sim Instance stays Draft on purpose: worldgen/provisioning of the
-student's own world is not built yet, and an Active instance would point the
-student at the shared golden-template books. Whoever builds provisioning
-flips it to Active.
+The instance is seeded with the shared demo story (demo.setup_demo) as a
+stopgap: per-student world generation isn't built yet, so all students see
+the same Week-1 content and, via LedgerDesk, the shared Meridian Trading books.
 
 If email can't be queued, a ToDo goes to the System Managers so the link can
 be relayed by hand (same fallback model as notify.py).
@@ -60,11 +59,14 @@ def enroll(app_name: str):
     _ensure_role()
     user = _ensure_user(app)
 
-    existing = frappe.db.get_value("Sim Instance", {"student": user.name, "status": ["!=", "Completed"]})
-    instance = existing or frappe.get_doc({
-        "doctype": "Sim Instance", "student": user.name, "status": "Draft",
-        "level": app.level_interested or "junior-accountant",
-    }).insert(ignore_permissions=True).name
+    instance = frappe.db.get_value("Sim Instance", {"student": user.name, "status": ["!=", "Completed"]})
+    if not instance:
+        # Active Week-1 instance with the story content (inbox, chats, drive
+        # documents). Stopgap until per-student world generation exists.
+        from meridian_sim.demo import setup_demo
+
+        setup_demo(user.name)
+        instance = frappe.db.get_value("Sim Instance", {"student": user.name, "status": "Active"})
     app.db_set("linked_instance", instance, notify=False)
 
     link = user._reset_password(send_email=False)
@@ -93,5 +95,5 @@ def enroll(app_name: str):
         return
 
     notify_reviewers("Student Application", app.name,
-                     f"{app.full_name} enrolled: login created, welcome email queued, {instance} (Draft).",
+                     f"{app.full_name} enrolled: login created, welcome email queued, {instance} (Active).",
                      "Low")
