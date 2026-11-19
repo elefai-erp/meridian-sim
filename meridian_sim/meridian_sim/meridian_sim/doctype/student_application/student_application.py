@@ -14,7 +14,7 @@ class StudentApplication(Document):
 				from meridian_sim.student_enrollment import enroll
 
 				enroll(self.name)
-			except Exception:
+			except Exception:  # noqa: BLE001 - must never block saving the application
 				frappe.log_error(title="Student enrollment failed")
 				from meridian_sim.notify import notify_reviewers
 

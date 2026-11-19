@@ -85,7 +85,7 @@ def enroll(app_name: str):
             ),
             reference_doctype="Student Application", reference_name=app.name,
         )
-    except Exception:
+    except Exception:  # noqa: BLE001 - any mail failure falls back to a ToDo
         frappe.log_error(title="Student enrollment email failed")
         notify_reviewers("Student Application", app.name,
                          f"Enrolled {app.full_name} but the email failed. Send them this set-password link by hand: {link}",
