@@ -8,7 +8,7 @@ the ledger and it's always correct.
 """
 
 import frappe
-from frappe.utils import now, get_first_day, get_last_day
+from frappe.utils import get_first_day, get_last_day, now
 
 # Master doc's scorecard, verbatim.
 POINTS = {
@@ -65,7 +65,7 @@ def compute_badge(scenarios_submitted: int, scenarios_authored: int, is_master: 
     }
 
 
-def award_points(contributor: str, reason: str, reference_scenario: str = None) -> int:
+def award_points(contributor: str, reason: str, reference_scenario: str | None = None) -> int:
     """Insert one ledger entry. `reason` must be a POINTS key."""
     points = POINTS[reason]
     frappe.get_doc({

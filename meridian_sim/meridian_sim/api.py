@@ -208,8 +208,8 @@ def _books_summary(period):
         )[0]
         out.update(invoices=int(si[0]), outward_taxable=float(si[1]), outward_tax=float(si[2]),
                    purchase_invoices=int(pi[0]), itc_taxable=float(pi[1]), itc_tax=float(pi[2]))
-    except Exception:
-        pass
+    except Exception:  # noqa: BLE001 - dashboard degrades to zeros if books are unreadable
+        frappe.log_error(title="gst dashboard books summary failed")
     return out
 
 
